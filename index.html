@@ -139,6 +139,13 @@
   .footer{flex-wrap:wrap}
   @media(max-width:360px){.music-credits{font-size:10px}.footer-music-credits{font-size:9px}}
 
+
+  /* V11: administrativa - exclusao definitiva com confirmacao */
+  .participant-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap;flex-shrink:0}
+  .tag-delete{min-width:66px;border:1px solid #a34336;background:#fff3ef;color:#8b2e26;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:950}
+  .tag-delete:hover:not(:disabled){background:#ffe3db;border-color:#a34336}
+  .tag-delete:disabled{opacity:.45;cursor:not-allowed}
+  @media(max-width:355px){.participant{align-items:flex-start;flex-direction:column}.participant-actions{width:100%;justify-content:flex-start}}
 </style>
   <!-- Missão OPA. Use a pasta PUBLICAR_GITHUB para registros oficiais. -->
 </head>
@@ -438,6 +445,7 @@ const scenes = [
     <h2>Você concluiu a Missão OPA! 🎉</h2>
     <p class="subtitle">OBSERVAR. PENSAR. AGIR. Para registrar sua participação nesta experiência, informe seu nome completo e o turno em que trabalha.</p>
     <div class="gift"><div class="gifticon">🌿</div><div><strong>UMA ATITUDE FAZ A DIFERENÇA</strong><small>Seu registro identifica a conclusão da experiência · Um número por participante</small></div></div>
+    <p class="smallprint">Cada nome completo pode ser registrado apenas uma vez, independentemente do turno. Se houver duas pessoas com o mesmo nome, procure a organização.</p>
     <form id="register-form" class="formcard">
       <div class="field"><label for="fullname">Seu nome completo</label><input id="fullname" name="fullname" type="text" maxlength="100" autocomplete="name" placeholder="Ex.: Maria Aparecida Silva" required value="${escapeHtml(state.formName)}"></div>
       <div class="field"><label for="shift">Qual é o seu turno?</label><select id="shift" name="shift" required><option value="">Selecione seu turno</option><option value="Turno 1" ${state.formShift==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.formShift==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.formShift==='Turno 3'?'selected':''}>Turno 3</option></select></div>
@@ -492,7 +500,7 @@ const scenes = [
       ${done?`<h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
       <h2 class="winner-title">👥 Inscritos (${total})</h2>
       <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os turnos</option><option value="Turno 1" ${state.shiftFilter==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.shiftFilter==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.shiftFilter==='Turno 3'?'selected':''}>Turno 3</option></select></div>
-      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint">Exclusões não apagam cadastro, mas retiram a pessoa do sorteio. Administradores são inelegíveis automaticamente.</p>
+      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas o torna inelegível. <strong>Apagar cadastro</strong> remove o participante definitivamente do banco e permite um novo cadastro do mesmo nome. Números apagados não são reutilizados. A exclusão definitiva exige confirmação e não fica disponível depois do sorteio.</p>
     </section>`;
   }
   function adminListHtml(){
@@ -500,7 +508,7 @@ const scenes = [
     const q=normalName(state.search);
     const filtered=state.adminData.participants.filter(x=> (state.shiftFilter==='all'||x.shift===state.shiftFilter) && (!q||normalName(x.full_name).includes(q)||ticketLabel(x.ticket_no).includes(q)));
     if(!filtered.length)return '<div class="empty">Nenhum participante encontrado.</div>';
-    return filtered.map(p=>`<div class="participant ${p.excluded||p.is_admin?'excluded':''}"><div class="personinfo"><strong>🎟 ${ticketLabel(p.ticket_no)} · ${escapeHtml(p.full_name)}</strong><small>${escapeHtml(p.shift)}${p.is_admin?' · ⛔ ADMINISTRADOR':''}${p.excluded?' · EXCLUÍDO':''}</small></div><button class="tag ${p.excluded?'active':''}" type="button" data-action="exclude" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||p.is_admin||state.busy?'disabled':''}>${p.is_admin?'ADMIN':p.excluded?'REINCLUIR':'EXCLUIR'}</button></div>`).join('');
+    return filtered.map(p=>`<div class="participant ${p.excluded||p.is_admin?'excluded':''}"><div class="personinfo"><strong>🎟 ${ticketLabel(p.ticket_no)} · ${escapeHtml(p.full_name)}</strong><small>${escapeHtml(p.shift)}${p.is_admin?' · ⛔ ADMINISTRADOR':''}${p.excluded?' · EXCLUÍDO':''}</small></div><div class="participant-actions"><button class="tag ${p.excluded?'active':''}" type="button" data-action="exclude" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||p.is_admin||state.busy?'disabled':''}>${p.is_admin?'ADMIN':p.excluded?'REINCLUIR':'EXCLUIR'}</button><button class="tag-delete" type="button" data-action="delete-participant" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||state.busy?'disabled':''} aria-label="Apagar definitivamente o cadastro de ${escapeHtml(p.full_name)} número ${ticketLabel(p.ticket_no)}">APAGAR</button></div></div>`).join('');
   }
   
   function ensureAudioButton(){
@@ -643,6 +651,7 @@ const scenes = [
     try{
       if(cloud){
         if(action==='exclude')await rpc('opa_admin_exclude',{p_ticket_no:params.ticket,p_excluded:params.excluded},state.token);
+        if(action==='delete')await rpc('opa_admin_delete',{p_ticket_no:params.ticket},state.token);
         if(action==='toggle')await rpc('opa_admin_toggle_registration',{p_open:params.open},state.token);
         if(action==='draw')await rpc('opa_admin_draw',{},state.token);
       }else{
@@ -651,6 +660,13 @@ const scenes = [
           const items=demoList(),person=items.find(x=>x.ticket_no===params.ticket);
           if(!person)throw new Error('Número não encontrado.');
           person.excluded=params.excluded;setDemoList(items);
+        }
+        if(action==='delete'){
+          if(demoWinners().length)throw new Error('O sorteio já foi realizado. Não é possível apagar participantes.');
+          const items=demoList();
+          const rest=items.filter(x=>Number(x.ticket_no)!==Number(params.ticket));
+          if(rest.length===items.length)throw new Error('Número não encontrado.');
+          setDemoList(rest);
         }
         if(action==='toggle'){
           if(demoWinners().length)throw new Error('O sorteio já foi realizado.');
@@ -723,6 +739,17 @@ const scenes = [
       const ticket=Number(b.dataset.ticket),person=state.adminData.participants.find(x=>x.ticket_no===ticket);
       if(person&&confirm(`${person.excluded?'Reincluir':'Excluir'} ${person.full_name} (#${ticketLabel(ticket)}) do sorteio?`))
         await adminMutation('exclude',{ticket,excluded:!person.excluded});
+    }else if(a==='delete-participant'){
+      const ticket=Number(b.dataset.ticket);
+      const person=state.adminData?.participants.find(x=>Number(x.ticket_no)===ticket);
+      if(person){
+        const expected=ticketLabel(ticket);
+        const typed=window.prompt(`Apagar DEFINITIVAMENTE o cadastro de ${person.full_name} (nº ${expected})?\n\nIsso não poderá ser desfeito. Digite o número ${expected} para confirmar.`);
+        if(typed!==null){
+          if(typed.trim()!==expected){alertError('Número de confirmação incorreto. Nenhum cadastro foi apagado.');render();}
+          else await adminMutation('delete',{ticket});
+        }
+      }
     }else if(a==='draw'){
       if(confirm('CONFIRMAR: sortear agora exatamente 5 kits? Esta rodada ficará gravada e NÃO poderá ser refeita pelo painel.'))
         await adminMutation('draw');
