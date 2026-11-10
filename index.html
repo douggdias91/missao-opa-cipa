@@ -346,8 +346,11 @@ const scenes = [
     const items=demoList();
     if(items.some(x=>normalName(x.full_name)===normalName(full_name)))throw new Error('Este nome já está cadastrado neste aparelho.');
     if(normalName(full_name)==='administrador de demonstracao')throw new Error('A organização não participa.');
-    const ticket_no=(Number(opaLocal.getItem('opa_demo_sequence_v3'))||0)+1;
-    opaLocal.setItem('opa_demo_sequence_v3',String(ticket_no));
+    // Demonstracao: reutiliza a menor lacuna, como o Supabase V12.
+    // Apenas cadastros APAGADOS liberam o numero; EXCLUIR mantem o registro.
+    const taken=new Set(items.map(x=>Number(x.ticket_no)));
+    let ticket_no=1;
+    while(taken.has(ticket_no))ticket_no++;
     items.push({ticket_no,full_name,shift,excluded:false,is_admin:false,created_at:new Date().toISOString()});
     setDemoList(items);
     return {ticket_no,full_name,shift};
@@ -500,7 +503,7 @@ const scenes = [
       ${done?`<h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
       <h2 class="winner-title">👥 Inscritos (${total})</h2>
       <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os turnos</option><option value="Turno 1" ${state.shiftFilter==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.shiftFilter==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.shiftFilter==='Turno 3'?'selected':''}>Turno 3</option></select></div>
-      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas o torna inelegível. <strong>Apagar cadastro</strong> remove o participante definitivamente do banco e permite um novo cadastro do mesmo nome. Números apagados não são reutilizados. A exclusão definitiva exige confirmação e não fica disponível depois do sorteio.</p>
+      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas o torna inelegível. <strong>Apagar cadastro</strong> remove o participante definitivamente do banco e permite um novo cadastro do mesmo nome. Números apagados ficam disponíveis para a próxima inscrição, sem mudar os números dos demais. A exclusão definitiva exige confirmação e não fica disponível depois do sorteio.</p>
     </section>`;
   }
   function adminListHtml(){
@@ -744,7 +747,7 @@ const scenes = [
       const person=state.adminData?.participants.find(x=>Number(x.ticket_no)===ticket);
       if(person){
         const expected=ticketLabel(ticket);
-        const typed=window.prompt(`Apagar DEFINITIVAMENTE o cadastro de ${person.full_name} (nº ${expected})?\n\nIsso não poderá ser desfeito. Digite o número ${expected} para confirmar.`);
+        const typed=window.prompt(`Apagar DEFINITIVAMENTE o cadastro de ${person.full_name} (nº ${expected})?\n\nIsso não poderá ser desfeito. O número ficará disponível para outro cadastro. Digite o número ${expected} para confirmar.`);
         if(typed!==null){
           if(typed.trim()!==expected){alertError('Número de confirmação incorreto. Nenhum cadastro foi apagado.');render();}
           else await adminMutation('delete',{ticket});
