@@ -248,6 +248,54 @@ body.opa-show-present{overflow:hidden}
  .opa-p-body{gap:4px}
 }
 
+
+/* V15: clareza de navegacao para operadores, sem alterar a administracao */
+.opa-simple-start{min-height:auto;display:flex;flex-direction:column;justify-content:flex-start;gap:14px;padding:18px 0 14px}
+.opa-hero-heading{display:grid;gap:9px;justify-items:start}
+.opa-hero-heading h1{font-weight:1000;color:#143d30;font-size:clamp(37px,10.5vw,57px);line-height:1.03;letter-spacing:-1.8px;margin:0}
+.opa-hero-heading h1 span{color:#25815b}
+.opa-hero-heading p{font-size:17px;line-height:1.32;color:#375d4d;font-weight:740;margin:0}
+.opa-start-illustration{margin-top:0!important;padding:6px!important;border-radius:20px!important;border:1px solid #b9d9c5!important;background:#edf6ee!important;box-shadow:none!important}
+.opa-start-illustration .artbox{border-radius:15px!important;box-shadow:none!important}
+.opa-tap-start-graphic{display:block;width:100%;appearance:none;cursor:pointer;text-align:initial;background:#edf6ee!important;transition:transform .15s ease!important}
+.opa-tap-start-graphic:active{transform:scale(.985)}
+.opa-tap-start-graphic:focus-visible{outline:3px solid #31a26c;outline-offset:3px}
+.opa-start-illustration .artbox svg{height:auto;max-height:185px;width:100%;display:block}
+.opa-tap-direction{margin:0 0 -6px;text-align:center;color:#175a3f;font-size:14px;font-weight:1000;letter-spacing:.4px;animation:opaPoint 1.4s ease-in-out infinite}
+.opa-start-cta{min-height:75px!important;padding:12px 8px!important;font-size:clamp(17px,5vw,20px)!important;border-radius:20px!important;background:linear-gradient(105deg,#146a48,#29a16b)!important;box-shadow:0 7px 0 #0d4d34,0 0 0 5px rgba(103,207,140,.12)!important;animation:opaStartGlow 1.75s ease-in-out infinite!important;line-height:1.18!important}
+.opa-start-cta:disabled{background:#a3bdb2!important;box-shadow:0 4px 0 #779184!important;animation:none!important}
+.opa-start-icon{background:#e8ffaf;color:#194c35;width:39px;height:39px;min-width:39px;border-radius:50%;display:grid;place-items:center;font-size:19px;box-shadow:inset 0 0 0 2px rgba(28,91,63,.11)}
+.opa-under-start{font-size:13px;text-align:center;line-height:1.35;color:#4c6b5c;margin:0;font-weight:750}
+.opa-three-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0 0;padding-top:16px;border-top:1px solid #dce9dd}
+.opa-three-steps>div{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;background:none;border:none;box-shadow:none;cursor:default}
+.opa-three-steps>div span{font-size:22px}
+.opa-ux-entry .audio-toggle{display:none!important}
+.opa-ux-play .audio-toggle{font-size:11px;padding:8px 10px;background:#d5efd9;color:#194a36;box-shadow:0 3px 6px rgba(17,66,42,.13);bottom:8px;right:8px;opacity:.85}.opa-three-steps strong{font-size:12px;color:#2b5c46}
+.opa-guided-stage .phase-chip{color:#185b42!important;background:#e1f3e6!important;font-size:12px!important;letter-spacing:.7px!important;border:1px solid #bad8c7}
+.opa-guided-stage .scene-step{font-size:13px!important;color:#226b4a!important;line-height:1.3!important}
+.opa-readonly-block{box-shadow:none!important;background:transparent!important;border:0!important;border-radius:0!important;padding:8px 1px!important;cursor:default}
+.opa-readonly-block:hover{transform:none!important}
+.opa-readonly-block h3{font-size:clamp(25px,6.5vw,31px)!important;line-height:1.13!important;color:#164532!important;margin:0 0 12px!important}
+.opa-readonly-block p{font-size:17px!important;line-height:1.54!important;color:#2e5342!important;font-weight:660!important}
+.opa-readonly-block .smallbrand{color:#2b7a59!important}
+.opa-action-cue{font-size:14px!important;color:#16613f!important;font-weight:900!important;line-height:1.45!important;margin:16px 0 9px!important;text-align:center}
+.opa-next-cta{min-height:66px!important;border-radius:16px!important;background:linear-gradient(100deg,#126c49,#2b9867)!important;box-shadow:0 6px 0 #0e4d35!important;font-size:17px!important;animation:opaStartGlow 2.2s ease-in-out infinite}
+.opa-photo-intro{margin:8px 0 10px;font-size:16px;font-weight:650;text-align:center;color:#185b42}
+.opa-photo-button{display:block;width:100%;padding:0;appearance:none;cursor:pointer;border-color:#4f9e70!important;background:#eff9f1!important;position:relative;box-shadow:0 8px 18px rgba(10,55,33,.14)!important;overflow:hidden}
+.opa-photo-button img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.opa-photo-pointer{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#d9f67b;color:#16442c;font-size:14px;font-weight:1000;letter-spacing:.1px;padding:11px 17px;border:2px solid white;border-radius:999px;box-shadow:0 8px 20px rgba(10,55,33,.24);white-space:nowrap;pointer-events:none;animation:opaPointer 1.5s ease-in-out infinite}
+.opa-photo-button:focus-visible{outline:4px solid #c1ed5d;outline-offset:3px}
+.opa-choice-cue{text-align:left!important;margin:0 0 11px!important}
+.question-card .choice{font-size:17px!important;min-height:80px!important;border:2px solid #afcfbd!important;box-shadow:0 4px 0 #d7e7d9!important}
+.question-card .choice:active{transform:scale(.985)}
+.question-card .choice:hover,.question-card .choice:focus-visible{border-color:#177e53!important;background:#f0fff3!important}
+.feedback-screen .continue{min-height:68px;font-size:16px!important;background:linear-gradient(100deg,#126c49,#2b9867)!important;box-shadow:0 6px 0 #0e4d35!important;animation:opaStartGlow 2s ease-in-out infinite}
+@keyframes opaStartGlow{0%,100%{filter:brightness(1);box-shadow:0 6px 0 #0e4d35,0 0 0 5px rgba(114,206,134,.13)}50%{filter:brightness(1.12);box-shadow:0 6px 0 #0e4d35,0 0 0 12px rgba(114,206,134,.18)}}
+@keyframes opaPoint{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@keyframes opaPointer{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.055)}}
+@media(max-width:360px){.opa-simple-start{gap:10px;padding-top:12px}.opa-hero-heading h1{font-size:34px}.opa-start-illustration .artbox svg{max-height:150px}.opa-start-cta{min-height:67px!important;font-size:16px!important}.opa-three-steps{padding-top:7px}}
+@media(prefers-reduced-motion: reduce){.opa-tap-direction,.opa-start-cta,.opa-next-cta,.opa-photo-pointer,.feedback-screen .continue{animation:none!important}}
+
 </style>
   <!-- Missão OPA. Use a pasta PUBLICAR_GITHUB para registros oficiais. -->
 </head>
@@ -468,16 +516,26 @@ const scenes = [
     catch(e){state.registrationOpen=false;state.error='Não foi possível verificar as inscrições. Confirme a conexão com a internet.'}
   }
 
-  function splashView(){return `<section class="splash">
-    <span class="pill"><span class="dot"></span> BEM-VINDO À EXPERIÊNCIA OPA</span>
-    <div class="splash-card"><div class="artbox intro-art">${coverArt}</div></div>
-    <div class="splash-copy"><h1>Observe.<br>Pense.<br>Aja.</h1><p>Antes de começar, veja o conceito ganhar vida: o olho observa, a ideia acende e o agir confirma a atitude correta.</p></div>
-    <div class="splash-tip"><span class="ico">✨</span><span>Toque para entrar na missão. A experiência está mais fluida e animada em todo o percurso.</span></div>
-    <button class="cta enter-mission" type="button" data-action="open-intro">ENTRAR NA MISSÃO <span class="arrow">➜</span></button>
-    <p class="hint-under">Dica: ative o som para deixar a abertura ainda mais envolvente.</p>
+  function splashView(){return `<section class="splash opa-simple-start" aria-label="Início da Missão OPA">
+    <div class="opa-hero-heading">
+      <span class="pill"><span class="dot"></span> BEM-VINDO À MISSÃO OPA</span>
+      <h1>MISSÃO <span>OPA!</span></h1>
+      <p>Observe, pense e escolha a melhor atitude.</p>
+    </div>
+    <button class="splash-card opa-start-illustration opa-tap-start-graphic" type="button" data-action="open-intro" aria-label="Toque aqui para começar a Missão OPA"><div class="artbox intro-art">${coverArt}</div></button>
+    <p class="opa-tap-direction" aria-hidden="true">👇 COMECE PELO BOTÃO VERDE</p>
+    <button class="cta enter-mission opa-start-cta" type="button" data-action="open-intro" ${state.registrationOpen?'':'disabled'}>
+      <span class="opa-start-icon" aria-hidden="true">▶</span><span>${state.registrationOpen?'TOQUE AQUI PARA JOGAR':'INSCRIÇÕES ENCERRADAS'}</span><span class="arrow" aria-hidden="true">➜</span>
+    </button>
+    <p class="opa-under-start">São 3 situações rápidas. Você não precisa instalar nada.</p>
+    <div class="opa-three-steps" aria-label="Como jogar">
+      <div><span aria-hidden="true">👁</span><strong>1. Observe</strong></div>
+      <div><span aria-hidden="true">💡</span><strong>2. Pense</strong></div>
+      <div><span aria-hidden="true">✅</span><strong>3. Responda</strong></div>
+    </div>
   </section>`}
   
-  function cover(){return `<section class="intro">
+    function cover(){return `<section class="intro">
     <span class="pill"><span class="dot"></span> LANÇAMENTO · EXPERIÊNCIA INTERATIVA</span>
     <p class="eyebrow">PREPARE-SE PARA UMA NOVA MISSÃO</p>
     <h1>MISSÃO<br><span>OPA!</span></h1>
@@ -495,39 +553,42 @@ const scenes = [
     <div class="progress" aria-label="Cena ${i+1} de 3">${scenes.map((_,j)=>`<div class="segment ${j<i?'past':j===i?'active':''}"></div>`).join('')}</div>`}
   function contextView(){
     const s=scenes[state.index];
-    return `<section class="phase-screen" aria-label="Contexto da cena ${state.index+1}">${sceneHeader(state.index)}
-      <span class="phase-chip">ETAPA 1 · CONTEXTO</span>
-      <div class="context-card"><div class="smallbrand">${escapeHtml(s.tag)}</div><h3>${escapeHtml(s.contextTitle)}</h3><p>${escapeHtml(s.contextIntro)}</p>
-      <ul class="context-list">${s.contextPoints.map((p,i)=>`<li><span class="n">${i+1}</span><span>${escapeHtml(p)}</span></li>`).join('')}</ul></div>
-      <div class="retro-note">🎵 Se quiser, deixe o som ligado no botão flutuante para uma experiência mais divertida.</div>
-      <div class="scene-actions" style="margin-top:16px"><button class="cta" type="button" data-action="to-scene">VER A CENA <span class="arrow">➜</span></button></div>
+    return `<section class="phase-screen opa-guided-stage" aria-label="Contexto da cena ${state.index+1}">${sceneHeader(state.index)}
+      <span class="phase-chip">PASSO 1 · LEIA A SITUAÇÃO</span>
+      <div class="context-card opa-readonly-block"><div class="smallbrand">${escapeHtml(s.tag)}</div><h3>${escapeHtml(s.contextTitle)}</h3>
+        <p>${escapeHtml(s.contextIntro)}</p></div>
+      <p class="opa-action-cue">👇 Quando terminar de ler, toque no botão:</p>
+      <div class="scene-actions"><button class="cta opa-next-cta" type="button" data-action="to-scene">VER A IMAGEM <span class="arrow">➜</span></button></div>
     </section>`;
   }
   function sceneOnlyView(){
     const s=scenes[state.index];
-    return `<section class="scene" aria-label="Observação da cena ${state.index+1}">${sceneHeader(state.index)}
-      <div class="scene-step">2 · OBSERVAR</div><h2>${escapeHtml(s.title)}</h2><p class="scenario">${escapeHtml(s.setup)}</p>
-      <div class="photo-frame"><img src="${s.photo}" alt="Cena ilustrando ${escapeHtml(s.target)}"></div>
-      <div class="bigcall"><strong>MISSÃO</strong><p>Analise a imagem e pense: qual detalhe ou atitude merece atenção nesta situação?</p></div>
-      <div class="scene-actions" style="margin-top:14px"><button class="cta" type="button" data-action="show-error">JÁ OBSERVEI <span class="arrow">➜</span></button></div>
-      <p class="phase-note">Na próxima tela, mostramos o ponto observado.</p>
+    return `<section class="scene opa-guided-stage" aria-label="Observação da cena ${state.index+1}">${sceneHeader(state.index)}
+      <div class="scene-step">PASSO 2 · OBSERVE A IMAGEM</div><h2>${escapeHtml(s.title)}</h2><p class="scenario">${escapeHtml(s.setup)}</p>
+      <p class="opa-photo-intro">👇 <strong>Toque na foto</strong> para descobrir o detalhe!</p>
+      <button class="photo-frame opa-photo-button" data-action="show-error" type="button" aria-label="Toque para revelar o detalhe observado nesta cena">
+        <img src="${s.photo}" alt="Cena ilustrando ${escapeHtml(s.target)}">
+        <span class="opa-photo-pointer" aria-hidden="true">👆 TOQUE NA FOTO</span>
+      </button>
+      <div class="scene-actions"><button class="cta opa-next-cta" type="button" data-action="show-error">MOSTRAR O DETALHE <span class="arrow">➜</span></button></div>
     </section>`;
   }
   function observedView(){
     const s=scenes[state.index];
-    return `<section class="scene" aria-label="Descrição do ponto observado na cena ${state.index+1}">${sceneHeader(state.index)}
-      <div class="scene-step">3 · ERRO OU ATITUDE OBSERVADA</div><h2>${escapeHtml(s.title)}</h2><p class="scenario">Veja abaixo o ponto identificado nesta situação.</p>
+    return `<section class="scene opa-guided-stage" aria-label="Descrição do ponto observado na cena ${state.index+1}">${sceneHeader(state.index)}
+      <div class="scene-step">PASSO 3 · DETALHE IDENTIFICADO</div><h2>${escapeHtml(s.title)}</h2>
       <div class="photo-frame"><img src="${s.photo}" alt="Cena com destaque para ${escapeHtml(s.target)}"><span class="marker-ring" style="left:${s.mx};top:${s.my}"></span></div>
       <div class="observation-panel"><div class="highlight-bar"><span class="ok">✓</span><span>${escapeHtml(s.reveal)}</span></div></div>
-      <div class="scene-actions" style="margin-top:14px"><button class="cta alt" type="button" data-action="to-question">RESPONDER AGORA <span class="arrow">➜</span></button></div>
+      <p class="opa-action-cue">👇 Agora escolha o que você faria:</p>
+      <div class="scene-actions"><button class="cta opa-next-cta" type="button" data-action="to-question">RESPONDER A PERGUNTA <span class="arrow">➜</span></button></div>
     </section>`;
   }
-  function questionView(){
+    function questionView(){
     const s=scenes[state.index];
     return `<section class="question-screen" aria-label="Pergunta da cena ${state.index+1}">${sceneHeader(state.index)}
-      <div class="question-card" id="decision"><div class="overline">4 · DECIDIR</div><h2>${escapeHtml(s.question)}</h2>
+      <div class="question-card" id="decision"><div class="overline">PASSO 4 · ESCOLHA UMA RESPOSTA</div><h2>${escapeHtml(s.question)}</h2><p class="opa-action-cue opa-choice-cue">👇 Toque em uma das alternativas abaixo:</p>
       ${s.choices.map((c,j)=>`<button class="choice" type="button" data-action="choose" data-choice="${j}"><span class="choice-icon">${String.fromCharCode(65+j)}</span><span>${escapeHtml(c.label)}</span></button>`).join('')}</div>
-      <p class="phase-note">Escolha a alternativa que melhor representa o conceito do Cartão OPA.</p>
+      <p class="phase-note">Não há necessidade de digitar. Basta tocar na sua resposta.</p>
     </section>`;
   }
   function feedbackView(){
@@ -540,7 +601,7 @@ const scenes = [
       <p class="feedback-subtitle">${escapeHtml(ok?'Você identificou a melhor atitude!':'O importante é aprender a agir de forma preventiva.')}</p>
       <div id="feedback" class="feedback" role="status"><strong>${escapeHtml(ok?'É ISSO AÍ!':'NESTA SITUAÇÃO, O MELHOR CAMINHO É:')}</strong><p>${escapeHtml(s.explanation)}</p></div>
       <div class="lesson"><div class="eyeline">✨ LEMBRE-SE</div><p>${state.index===0?'Antes do registro, o mais importante é agir com respeito e evitar o risco.':state.index===1?'Boas atitudes também merecem um OPA: reconhecer faz parte de cuidar.':'O Cartão OPA é para comportamentos. Condições físicas seguem a ferramenta correta.'}</p></div>
-      </div><button type="button" data-action="next" class="cta continue">${state.index===2?'FINALIZAR DESAFIOS':'PRÓXIMA CENA'} <span class="arrow">➜</span></button>
+      </div><button type="button" data-action="next" class="cta continue">${state.index===2?'CONCLUIR E REGISTRAR PARTICIPAÇÃO':'CONTINUAR PARA A PRÓXIMA CENA'} <span class="arrow">➜</span></button>
     </section>`
   }
   function registerView(){return `<section class="step">
@@ -846,6 +907,8 @@ const scenes = [
 
   function render(){
     document.body.classList.toggle('opa-show-present',state.screen==='drawPresentation');
+    document.body.classList.toggle('opa-ux-entry',state.screen==='splash');
+    document.body.classList.toggle('opa-ux-play',state.screen==='scene');
     ensureAudioButton();
     if(state.screen==='splash')app.innerHTML=splashView();
     if(state.screen==='intro')app.innerHTML=cover();
@@ -979,7 +1042,7 @@ const scenes = [
     unlockAudio();
     if(a==='test-audio'){if(!audio.enabled)audio.enabled=true;opaLocal.setItem('opa_audio_v9','true');startMusic();playSfx('good');ensureAudioButton();b.textContent='✓ SOM ATIVADO — VOLUME DO CELULAR';}
     // A abertura animada avança para a apresentação, não reinicia o splash.
-    else if(a==='open-intro'){playSfx('next');state.screen='intro';render();scrollTop();}
+    else if(a==='open-intro'&&state.registrationOpen){playSfx('next');state.screen='scene';state.index=0;state.choice=null;state.phase='context';render();scrollTop();}
     else if(a==='start'&&state.registrationOpen){playSfx('next');state.screen='scene';state.index=0;state.choice=null;state.phase='context';render();scrollTop();}
     else if(a==='to-scene'&&state.screen==='scene'&&state.phase==='context'){playSfx('next');state.phase='observe';render();scrollTop();}
     else if(a==='show-error'&&state.screen==='scene'&&state.phase==='observe'){playSfx('tap');state.phase='identified';render();scrollTop();}
