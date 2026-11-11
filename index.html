@@ -296,6 +296,26 @@ body.opa-show-present{overflow:hidden}
 @media(max-width:360px){.opa-simple-start{gap:10px;padding-top:12px}.opa-hero-heading h1{font-size:34px}.opa-start-illustration .artbox svg{max-height:150px}.opa-start-cta{min-height:67px!important;font-size:16px!important}.opa-three-steps{padding-top:7px}}
 @media(prefers-reduced-motion: reduce){.opa-tap-direction,.opa-start-cta,.opa-next-cta,.opa-photo-pointer,.feedback-screen .continue{animation:none!important}}
 
+
+/* V16: turn selection and testing controls; admin-only, never shown to colleagues */
+.opa-v16-shifts{background:linear-gradient(145deg,#eef8f1,#dff2e6);border:2px solid #b8d7c5;border-radius:18px;padding:14px;margin:14px 0;color:#174936}
+.opa-v16-shifts h3{margin:0 0 5px;font-size:19px;line-height:1.2}
+.opa-v16-shifts p{margin:3px 0 10px;line-height:1.45;font-size:13px;color:#426357}
+.opa-v16-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.opa-v16-shift{display:flex;align-items:center;gap:8px;border-radius:13px;background:white;padding:12px 10px;border:1px solid #bad3c5;font-size:13px;font-weight:850;min-height:48px;cursor:pointer;user-select:none}
+.opa-v16-shift:has(input:checked){background:#d2eddc;border-color:#2b8866;box-shadow:0 0 0 1px #2b8866 inset}
+.opa-v16-shift input{height:21px;width:21px;accent-color:#1c7753;flex:none}
+.opa-v16-small{font-size:12px;color:#3e6255;line-height:1.5;margin:8px 0}
+.opa-v16-mode{border-radius:14px;padding:12px 14px;background:#f3f8df;color:#325342;border:1px solid #a4ca9d;font-size:12px;line-height:1.55;font-weight:750;margin:12px 0}
+.opa-v16-mode.official{background:#e4f3ed;border-color:#7db99e}
+.opa-v16-mode.warn{background:#fff0c6;color:#654b22;border-color:#d1ac5f}
+.opa-v16-reset{border:2px solid #bf9955;background:#fff5d8;color:#6a4720;border-radius:12px;min-height:50px;width:100%;font-size:13px;font-weight:900;margin:10px 0;cursor:pointer}
+.opa-v16-go-live{border:2px solid #286b52;background:#e3f2e9;color:#19553b;border-radius:12px;min-height:50px;width:100%;font-size:13px;font-weight:950;cursor:pointer}
+.opa-v16-reset:disabled,.opa-v16-go-live:disabled{opacity:.45;cursor:not-allowed}
+.opa-v16-source{padding:12px;border-radius:12px;width:100%;border:2px solid #95baa8;background:white;color:#204e3b;font-size:14px;font-weight:750}
+.opa-v16-hint{font-size:12px;line-height:1.5;margin-top:10px;color:#46675a}
+@media(max-width:360px){.opa-v16-grid{grid-template-columns:1fr}.opa-v16-shift{min-height:44px}}
+
 </style>
   <!-- Missão OPA. Use a pasta PUBLICAR_GITHUB para registros oficiais. -->
 </head>
@@ -459,6 +479,7 @@ const scenes = [
   const adminMode = new URLSearchParams(location.search).get('admin') === '1';
   const state = {screen: adminMode?'adminLogin':'splash', index:0, phase:'context', choice:null, results:[],
     formName:'', formShift:'', formConsent:false, error:'', busy:false, receipt:null, registrationOpen:true,
+    selectedShifts:['Turno 1','Turno 2','Turno 3','ADM'],simSource:'demo50',
     token:opaSession.getItem('opa_admin_token_v3')||'', adminData:null, search:'', shiftFilter:'all', simulatedWinners:[], drawPresentation:null};
   const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ticketLabel = n => String(n).padStart(4,'0');
@@ -506,7 +527,7 @@ const scenes = [
     return {ticket_no,full_name,shift};
   }
   function demoDashboard(){return {
-    registration_open:demoOpen(),admin_name:'Administrador de demonstração',
+    registration_open:demoOpen(),admin_name:'Administrador de demonstração',test_mode:true,
     participants:demoList().map(x=>({...x,is_admin:normalName(x.full_name)==='administrador de demonstracao'})),
     winners:demoWinners()
   }}
@@ -614,7 +635,7 @@ const scenes = [
     <p class="smallprint">Cada nome completo pode ser registrado apenas uma vez, independentemente do turno. Se houver duas pessoas com o mesmo nome, procure a organização.</p>
     <form id="register-form" class="formcard">
       <div class="field"><label for="fullname">Seu nome completo</label><input id="fullname" name="fullname" type="text" maxlength="100" autocomplete="name" placeholder="Ex.: Maria Aparecida Silva" required value="${escapeHtml(state.formName)}"></div>
-      <div class="field"><label for="shift">Qual é o seu turno?</label><select id="shift" name="shift" required><option value="">Selecione seu turno</option><option value="Turno 1" ${state.formShift==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.formShift==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.formShift==='Turno 3'?'selected':''}>Turno 3</option></select></div>
+      <div class="field"><label for="shift">Qual é o seu turno?</label><select id="shift" name="shift" required><option value="">Selecione seu turno</option><option value="Turno 1" ${state.formShift==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.formShift==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.formShift==='Turno 3'?'selected':''}>Turno 3</option><option value="ADM" ${state.formShift==='ADM'?'selected':''}>ADM</option></select></div>
       <label class="consent"><input type="checkbox" id="consent" ${state.formConsent?'checked':''} required><span>Concordo que meu nome completo e turno sejam registrados pela organização para controle da participação na Missão OPA e eventuais atividades internas vinculadas ao lançamento. Meus dados não serão publicados nesta página e deverão ser eliminados quando não forem mais necessários.</span></label>
       ${errorBox()}
       <button class="cta" type="submit" ${state.busy?'disabled':''}>${state.busy?'SALVANDO REGISTRO...':'GERAR MEU NÚMERO'} <span class="arrow">➜</span></button>
@@ -651,26 +672,41 @@ const scenes = [
     </section>`}
   function eligibleCount(d){return d.participants.filter(x=>!x.excluded&&!x.is_admin).length}
   const isTestParticipant = p => normalName(p.full_name).startsWith('teste opa ');
+  const OPA_SHIFTS=['Turno 1','Turno 2','Turno 3','ADM'];
+  const OPA_SAMPLE_NAMES=[
+    'Ana Martins','Bruno Farias','Carla Ferreira','Daniel Batista','Elisa Gomes','Fabio Silva',
+    'Gabriela Santos','Hugo Almeida','Isabela Lopes','João Rocha','Karen Costa','Lucas Ribeiro',
+    'Mariana Souza','Nicolas Pereira','Olivia Teixeira','Paulo Barros','Renata Melo','Samuel Castro',
+    'Tatiana Ribeiro','Ulisses Duarte','Vanessa Barbosa','William Nogueira','Yasmin Lima','André Guimarães',
+    'Bianca Oliveira','Caio Fernandes','Diana Rodrigues','Eduardo Moura','Fernanda Vieira','Gustavo Cardoso',
+    'Helena Souza','Igor Santos','Juliana Alves','Kleber Martins','Larissa Mendes','Marcelo Ferreira',
+    'Natália Gomes','Otavio Lima','Patricia Carvalho','Rafael Freitas','Sabrina Reis','Tiago Mendes',
+    'Valéria Prado','Wagner Costa','Yara Ribeiro','Zeca Farias','Camila Dias','Roberto Araújo',
+    'Priscila Marques','Vitor Batista'
+  ];
+  function opaSimulationPool(){
+    const filtered=state.selectedShifts;
+    if(state.simSource==='registered')return (state.adminData?.participants||[]).filter(p=>!p.excluded&&!p.is_admin&&filtered.includes(p.shift));
+    return OPA_SAMPLE_NAMES.map((full_name,i)=>({ticket_no:9001+i,full_name:'TESTE — '+full_name,
+      shift:OPA_SHIFTS[i%4],excluded:false,is_admin:false})).filter(p=>filtered.includes(p.shift));
+  }
+  function opaRandIndex(n){
+    if(!Number.isInteger(n)||n<=0)throw new Error('Conjunto de participantes inválido.');
+    if(!globalThis.crypto?.getRandomValues)throw new Error('Navegador incompatível com a seleção aleatória segura.');
+    const d=new Uint32Array(1),range=4294967296,limit=Math.floor(range/n)*n;
+    do {globalThis.crypto.getRandomValues(d)}while(d[0]>=limit);
+    return d[0]%n;
+  }
   function simulateFive(){
-    const d=state.adminData;
-    const pool=(d?.participants||[]).filter(p=>isTestParticipant(p)&&!p.excluded&&!p.is_admin);
-    if(pool.length<5){alertError('São necessários ao menos cinco registros TESTE OPA elegíveis para simular.');render();return;}
+    const pool=opaSimulationPool();
+    if(pool.length<5){alertError('Selecione turnos com pelo menos cinco participantes para simular.');render();return;}
     const remaining=pool.slice(),winners=[];
-    for(let i=0;i<5;i++){
-      const rand=new Uint32Array(1);
-      let pos;
-      if(window.crypto&&crypto.getRandomValues){
-        const limit=Math.floor(4294967296/remaining.length)*remaining.length;
-        do {crypto.getRandomValues(rand);} while(rand[0]>=limit);
-        pos=rand[0]%remaining.length;
-      }else{pos=Math.floor(Math.random()*remaining.length);}
-      winners.push({...remaining.splice(pos,1)[0],kit_no:i+1});
-    }
+    for(let i=0;i<5;i++)winners.push({...remaining.splice(opaRandIndex(remaining.length),1)[0],kit_no:i+1});
     state.simulatedWinners=winners;
-    opaStartPresentation('demo',winners);
+    opaStartPresentation('demo',winners,pool);
   }
 
-  let opaSpinTimeout=null,opaTickTimeout=null;
+    let opaSpinTimeout=null,opaTickTimeout=null;
   let opaCtx=null;
   function opaTone(freq,duration=0.07,volume=0.025,type='square'){
     if(!audio.enabled)return;
@@ -711,7 +747,7 @@ const scenes = [
     document.querySelectorAll('.opa-burst').forEach(x=>x.remove());
     if(audio.bg)audio.bg.volume=.44;
   }
-  function opaStartPresentation(mode,raw){
+  function opaStartPresentation(mode,raw,spinCandidates){
     // A roleta é ilustrativa: nunca escolhe ou altera os ganhadores.
     // No modo oficial a lista vem apenas do retorno autenticado do Supabase.
     if(!['official','demo'].includes(mode) || !Array.isArray(raw) || raw.length!==5)throw new Error('São necessários cinco resultados válidos.');
@@ -719,7 +755,7 @@ const scenes = [
     if(ids.size!==5 || raw.some(p=>!Number.isInteger(Number(p.ticket_no))||!p.full_name||p.is_admin))throw new Error('Resultados inválidos ou repetidos.');
     opaPresentationCleanup();
     const winners=raw.slice().sort((a,b)=>(Number(a.kit_no)||0)-(Number(b.kit_no)||0));
-    state.drawPresentation={mode,winners,index:0,phase:'ready',spinToken:0};
+    state.drawPresentation={mode,winners,index:0,phase:'ready',spinToken:0,spins:spinCandidates||null,selectedShifts:state.selectedShifts.slice()};
     state.screen='drawPresentation';clearError();render();scrollTop();
   }
   function opaDrawScreen(){
@@ -736,7 +772,7 @@ const scenes = [
         <div class="opa-p-roundup">${finishList}</div>
         <div class="opa-p-actions"><button type="button" class="opa-p-primary" data-action="draw-exit">VOLTAR AO PAINEL</button><button type="button" class="opa-p-secondary" data-action="draw-again">REVER ANIMAÇÃO</button></div>`:`
       <h1 class="opa-p-title">${spin?'A roleta está girando...':revealed?'TEMOS UM CONTEMPLADO!':'Quem será o próximo?'}</h1>
-      <p class="opa-p-sub">Kit ${kit} de 5 · ${p.mode==='demo'?'Participantes fictícios TESTE OPA':'Participantes elegíveis'}</p>
+      <p class="opa-p-sub">Kit ${kit} de 5 · ${p.mode==='demo'?'Participantes da simulação':'Participantes elegíveis'}</p>
       <div class="opa-p-progress">${p.winners.map((_,i)=>`<span class="${i<p.index?'done':i===p.index?'current':''}">Kit ${i+1}${i<p.index?' ✓':''}</span>`).join('')}</div>
       <div class="opa-wheel-area"><div class="opa-wheel-wrap"><div class="opa-wheel ${spin?'spin':revealed?'':'wait'}"><div class="opa-wheel-word">OPA!</div></div><div class="opa-pointer"></div></div></div>
       ${spin?'<div class="opa-p-counter" id="opa-digit">0000</div>':revealed?'':'<div class="opa-p-counter"><span class="muted">PRONTO PARA GIRAR</span></div>'}
@@ -745,7 +781,7 @@ const scenes = [
       `<div class="opa-gift"><div class="opa-gift-lid"></div><div class="opa-gift-box"><span class="opa-gift-mark">LEÃO</span></div></div>`}
       <div class="opa-p-actions">${p.phase==='ready'?`<button type="button" class="opa-p-primary" data-action="draw-spin">🎡 GIRAR PARA REVELAR O KIT ${kit}</button>`:p.phase==='spin'?'<button class="opa-p-primary" disabled>GIRANDO... 🔊</button>':`<button type="button" class="opa-p-primary" data-action="draw-next">${kit===5?'🏆 VER OS 5 CONTEMPLADOS':'➡ REVELAR O PRÓXIMO KIT'}</button>`}
       </div>
-      <p class="opa-p-caption">${p.mode==='demo'?'MODO FICTÍCIO: só usa registros TESTE OPA. Não fecha inscrições e não grava ganhadores.':'MODO OFICIAL: os nomes foram definidos e gravados pelo Supabase antes da animação.'} A roleta e a caixa são apenas efeitos visuais.</p>`}
+      <p class="opa-p-caption">${p.mode==='demo'?'MODO SIMULAÇÃO: não fecha inscrições, não grava sorteados e permite repetir livremente.':'MODO OFICIAL: os nomes foram definidos e gravados pelo Supabase antes da animação.'} A roleta e a caixa são apenas efeitos visuais.</p>`}
     </div></section>`;
   }
   function opaBurst(){
@@ -768,7 +804,7 @@ const scenes = [
     const token=p.spinToken;
     if(audio.bg)audio.bg.volume=.17;
     render();
-    const pool=(state.adminData?.participants||[]).filter(x=>!x.excluded&&!x.is_admin);
+    const pool=p.spins||(state.adminData?.participants||[]).filter(x=>!x.excluded&&!x.is_admin&&p.selectedShifts.includes(x.shift));
     let ticks=0;
     opaTickTimeout=setInterval(()=>{
       if(state.screen!=='drawPresentation'||!state.drawPresentation||state.drawPresentation.spinToken!==token){opaPresentationCleanup();return;}
@@ -795,31 +831,57 @@ const scenes = [
 
   function adminDashboardView(){
     const d=state.adminData||demoDashboard();
-    const total=d.participants.length,eligible=eligibleCount(d),excluded=total-eligible;
+    const total=d.participants.length,eligible=eligibleCount(d);
     const done=d.winners.length>0,closed=!d.registration_open;
-    const testRecords=d.participants.filter(isTestParticipant),testEligible=testRecords.filter(x=>!x.excluded&&!x.is_admin);
+    const configured=typeof d.test_mode==='boolean';
+    const testMode=d.test_mode===true;
+    const testRecords=d.participants.filter(isTestParticipant);
+    const selected=state.selectedShifts;
+    const selectedEligible=d.participants.filter(p=>selected.includes(p.shift)&&!p.excluded&&!p.is_admin).length;
+    const simPool=opaSimulationPool();
+    const canOfficial=configured&&!testMode&&!done&&closed&&selectedEligible>=5&&!testRecords.length&&!state.busy;
+    const pickers=OPA_SHIFTS.map(sh=>`<label class="opa-v16-shift"><input data-opa-shift="${sh}" type="checkbox" ${selected.includes(sh)?'checked':''} /><span>${sh}</span></label>`).join('');
     return `<section class="admin">
       <div class="adminbar"><div><span class="pill">🎁 SORTEIO OPA · ORGANIZAÇÃO</span><h1 class="admin-title">Central dos 5 kits</h1></div><button class="linkbutton" type="button" data-action="logout">Sair</button></div>
-      <p class="admin-sub">Bem-vindo(a), ${escapeHtml(d.admin_name)}. Inscrições dos três turnos em uma lista única.</p>
+      <p class="admin-sub">Bem-vindo(a), ${escapeHtml(d.admin_name)}. Inscrições dos três turnos e do grupo ADM.</p>
       ${errorBox()}
-      <div class="statusbar ${closed?'closed':''}">${done?'🏆 SORTEIO FINALIZADO':closed?'🔐 INSCRIÇÕES FECHADAS':'🟢 INSCRIÇÕES ABERTAS'} · ${total} registros no total</div>
-      <div class="stats"><div class="stat"><strong>${total}</strong><span>Participantes cadastrados</span></div><div class="stat"><strong>${eligible}</strong><span>Elegíveis para o sorteio</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 1').length}</strong><span>Turno 1</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 2').length}</strong><span>Turno 2</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 3').length}</strong><span>Turno 3</span></div></div>
-      <div class="admin-btns"><button class="dangerbtn" type="button" data-action="toggle-open" ${done||state.busy?'disabled':''}>${d.registration_open?'🔒 FECHAR INSCRIÇÕES':'🔓 REABRIR INSCRIÇÕES'}</button>
-      <button class="drawbtn" type="button" data-action="draw" ${done||!closed||eligible<5||testRecords.length||state.busy?'disabled':''}>🎉 ${done?'SORTEIO REALIZADO':'SORTEAR 5 KITS DE CHÁ'}</button></div>
-      <p class="minor">${done?'O resultado é definitivo e fica salvo no banco.':testRecords.length?'Sorteio DEFINITIVO BLOQUEADO enquanto houver registros fictícios TESTE OPA. Apague os testes antes do evento oficial.':'O administrador não concorre. Confira a lista e exclua eventuais registros indevidos antes de fechar e sortear. O sorteio só libera com as inscrições fechadas e pelo menos 5 elegíveis.'}</p>
-      <div class="simbox"><h3>🧪 Sorteio fictício — ensaio</h3>
-        <p>Encontrados <strong>${testRecords.length} cadastros TESTE OPA</strong> (${testEligible.length} elegíveis). Esta simulação sorteia apenas nomes fictícios, não grava resultados no Supabase e não encerra inscrições.</p>
-        ${testRecords.length?'<span class="simwarning">⚠ Não use o botão do sorteio definitivo enquanto existirem cadastros TESTE. A simulação abaixo pode ser refeita quantas vezes quiser.</span>':''}
-        <button class="simbtn" type="button" data-action="simulate-draw" ${testEligible.length<5||state.busy?'disabled':''}>🎲 ${state.simulatedWinners.length?'SIMULAR NOVAMENTE':'SIMULAR 5 GANHADORES (NÃO SALVA)'}</button>
-        ${state.simulatedWinners.length?`<div id="sim-results" class="simresult"><strong>🔬 RESULTADO FICTÍCIO — NÃO É OFICIAL</strong>${state.simulatedWinners.map(w=>`<span class="sim-row">🎁 Kit ${w.kit_no} · ${escapeHtml(w.full_name)} · Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</span>`).join('')}<p style="margin:10px 0 0">Recarregue a página para descartar este resultado. Nenhum ganhador foi salvo.</p></div>`:''}
+      ${!configured?'<div class="opa-v16-mode warn">⚠ Atualização do Supabase V16 pendente. Execute o SQL do pacote antes de usar o sorteio.</div>':testMode?'<div class="opa-v16-mode">🧪 <strong>MODO DE TESTES</strong> — você pode simular à vontade. Para o evento real será necessário ativar o modo oficial.</div>':'<div class="opa-v16-mode official">🛡 <strong>MODO OFICIAL ATIVO</strong> — resultado definitivo protegido. A simulação permanece liberada sem gravar nada.</div>'}
+      <div class="statusbar ${closed?'closed':''}">${done?'🏆 SORTEIO REGISTRADO':closed?'🔐 INSCRIÇÕES FECHADAS':'🟢 INSCRIÇÕES ABERTAS'} · ${total} registros no total</div>
+      <div class="stats"><div class="stat"><strong>${total}</strong><span>Participantes cadastrados</span></div><div class="stat"><strong>${eligible}</strong><span>Elegíveis no total</span></div>
+        ${OPA_SHIFTS.map(sh=>`<div class="stat"><strong>${d.participants.filter(x=>x.shift===sh).length}</strong><span>${sh}</span></div>`).join('')}
       </div>
-      ${done?`<button class="simbtn" type="button" data-action="draw-show-official">🎡 REVER A APRESENTAÇÃO DOS 5 GANHADORES</button><h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
+      <div class="opa-v16-shifts"><h3>🎯 Quais grupos participam?</h3>
+        <p>Marque os turnos desejados para as simulações e o sorteio oficial. A seleção oficial será validada no Supabase.</p>
+        <div class="opa-v16-grid">${pickers}</div>
+        <p class="opa-v16-small"><strong>${selected.length} selecionado(s)</strong> · ${selectedEligible} inscritos elegíveis nesses grupos. O turno ADM não dá acesso ao painel e administradores autenticados continuam inelegíveis.</p>
+        <button type="button" class="replay" data-action="pick-all-shifts">✓ SELECIONAR TODOS OS GRUPOS</button>
+      </div>
+      <div class="simbox"><h3>🎡 Simulador permanente — 5 kits</h3>
+        <p>Pode repetir a roleta quantas vezes quiser, mesmo com inscrições encerradas ou um resultado oficial registrado. <strong>A simulação não grava dados nem altera o sorteio real.</strong></p>
+        <label for="opa-sim-source" class="opa-v16-small"><strong>Participantes da simulação</strong></label>
+        <select id="opa-sim-source" class="opa-v16-source">
+          <option value="demo50" ${state.simSource==='demo50'?'selected':''}>50 nomes fictícios internos (recomendado)</option>
+          <option value="registered" ${state.simSource==='registered'?'selected':''}>Inscritos elegíveis atuais (sem gravar)</option>
+        </select>
+        <p class="opa-v16-small">Disponíveis na seleção: <strong>${simPool.length}</strong>. A roleta mostra 5 nomes diferentes por rodada.</p>
+        <button class="simbtn" type="button" data-action="simulate-draw" ${simPool.length<5||state.busy?'disabled':''}>🎡 SIMULAR 5 KITS — GIRAR ROLETA</button>
+        ${state.simulatedWinners.length?`<div id="sim-results" class="simresult"><strong>🧪 RESULTADO DE SIMULAÇÃO — NÃO OFICIAL</strong>${state.simulatedWinners.map(w=>`<span class="sim-row">🎁 Kit ${w.kit_no} · ${escapeHtml(w.full_name)} · Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</span>`).join('')}</div>`:''}
+      </div>
+      ${testMode&&done?`<div class="opa-v16-mode warn"><strong>Teste anterior registrado:</strong> existe uma rodada salva no Supabase. Você pode arquivar e reiniciar essa rodada, sem excluir participantes.
+        <button type="button" class="opa-v16-reset" data-action="reset-test">↻ REINICIAR RODADA DE TESTE E REABRIR INSCRIÇÕES</button></div>`:''}
+      ${testMode&&!done?`<div class="opa-v16-mode warn"><strong>Quando for realizar o sorteio verdadeiro:</strong> remova os cadastros TESTE OPA, confira a lista e ative o modo oficial. Esta mudança é irreversível pelo painel.
+        <button class="opa-v16-go-live" data-action="go-live" ${testRecords.length||!cloud||state.busy?'disabled':''}>🔒 ATIVAR MODO OFICIAL — SOMENTE NO DIA DO EVENTO</button>
+        ${testRecords.length?`<p class="opa-v16-hint">Há ${testRecords.length} registros TESTE OPA. Apague-os antes da ativação oficial.</p>`:''}</div>`:''}
+      <div class="admin-btns"><button class="dangerbtn" type="button" data-action="toggle-open" ${done||state.busy?'disabled':''}>${d.registration_open?'🔒 FECHAR INSCRIÇÕES':'🔓 REABRIR INSCRIÇÕES'}</button>
+      <button class="drawbtn" type="button" data-action="draw" ${canOfficial?'':'disabled'}>🎉 ${done?'SORTEIO OFICIAL REALIZADO':'SORTEAR 5 KITS — OFICIAL'}</button></div>
+      <p class="minor">${!configured?'Primeiro execute o SQL V16.':testMode?'Modo de testes: somente a simulação está liberada. Reinicialize o registro antigo acima, se necessário.':done?'Resultado oficial armazenado no banco; não é possível refazer. O simulador acima permanece ativo.':testRecords.length?'Remova os registros TESTE OPA antes do sorteio oficial.':`Sorteio único entre os ${selectedEligible} elegíveis dos grupos marcados. Feche as inscrições para liberar.`}</p>
+      ${done?`<button class="simbtn" type="button" data-action="draw-show-official">🎡 REVER OS 5 GANHADORES REGISTRADOS</button><h2 class="winner-title">🏆 Cinco vencedores registrados</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
       <h2 class="winner-title">👥 Inscritos (${total})</h2>
-      <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os turnos</option><option value="Turno 1" ${state.shiftFilter==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.shiftFilter==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.shiftFilter==='Turno 3'?'selected':''}>Turno 3</option></select></div>
-      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas o torna inelegível. <strong>Apagar cadastro</strong> remove o participante definitivamente do banco e permite um novo cadastro do mesmo nome. Números apagados ficam disponíveis para a próxima inscrição, sem mudar os números dos demais. A exclusão definitiva exige confirmação e não fica disponível depois do sorteio.</p>
+      <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os grupos</option>${OPA_SHIFTS.map(sh=>`<option value="${sh}" ${state.shiftFilter===sh?'selected':''}>${sh}</option>`).join('')}</select></div>
+      <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas torna o participante inelegível. <strong>Apagar cadastro</strong> o remove definitivamente. Números apagados ficam disponíveis para inscrição posterior. Exclusões ficam bloqueadas após o sorteio oficial.</p>
     </section>`;
   }
-  function adminListHtml(){
+    function adminListHtml(){
     if(!state.adminData)return '<div class="empty">Carregando...</div>';
     const q=normalName(state.search);
     const filtered=state.adminData.participants.filter(x=> (state.shiftFilter==='all'||x.shift===state.shiftFilter) && (!q||normalName(x.full_name).includes(q)||ticketLabel(x.ticket_no).includes(q)));
@@ -976,8 +1038,12 @@ const scenes = [
         if(action==='exclude')await rpc('opa_admin_exclude',{p_ticket_no:params.ticket,p_excluded:params.excluded},state.token);
         if(action==='delete')await rpc('opa_admin_delete',{p_ticket_no:params.ticket},state.token);
         if(action==='toggle')await rpc('opa_admin_toggle_registration',{p_open:params.open},state.token);
-        if(action==='draw')await rpc('opa_admin_draw',{},state.token);
+        if(action==='draw')await rpc('opa_admin_draw',{p_shifts:params.shifts},state.token);
+        if(action==='reset')await rpc('opa_admin_reset_test_draw',{p_confirmation:'REINICIAR TESTE OPA'},state.token);
+        if(action==='go-live')await rpc('opa_admin_go_live',{p_confirmation:'ATIVAR SORTEIO OFICIAL'},state.token);
       }else{
+        if(action==='reset'){opaLocal.removeItem('opa_demo_winners_v3');opaLocal.setItem('opa_demo_open_v3','true');}
+        if(action==='go-live')throw new Error('Ativação oficial disponível somente no Supabase real.');
         if(action==='exclude'){
           if(demoWinners().length)throw new Error('O sorteio já foi realizado.');
           const items=demoList(),person=items.find(x=>x.ticket_no===params.ticket);
@@ -998,7 +1064,7 @@ const scenes = [
         if(action==='draw'){
           if(demoOpen())throw new Error('Feche as inscrições primeiro.');
           if(!demoWinners().length){
-            const list=demoList().filter(x=>!x.excluded&&!x.is_admin);
+            const list=demoList().filter(x=>!x.excluded&&!x.is_admin&&params.shifts.includes(x.shift));
             if(list.length<5)throw new Error('Precisa de pelo menos 5 inscritos elegíveis.');
             // Demonstration only: browser-generated choices, NOT a production draw.
             const picks=[];
@@ -1028,6 +1094,8 @@ const scenes = [
     if(e.target.id==='shift')state.formShift=e.target.value;
     if(e.target.id==='consent')state.formConsent=e.target.checked;
     if(e.target.id==='admin-filter'){state.shiftFilter=e.target.value;const list=document.getElementById('admin-list');if(list)list.innerHTML=adminListHtml();}
+    if(e.target.matches('[data-opa-shift]')){const sh=e.target.dataset.opaShift;state.selectedShifts=e.target.checked?OPA_SHIFTS.filter(x=>state.selectedShifts.includes(x)||x===sh):state.selectedShifts.filter(x=>x!==sh);state.simulatedWinners=[];render();}
+    if(e.target.id==='opa-sim-source'){state.simSource=e.target.value;state.simulatedWinners=[];render();}
   });
   app.addEventListener('submit',e=>{
     if(e.target.id==='register-form'){e.preventDefault();submitRegistration()}
@@ -1061,6 +1129,18 @@ const scenes = [
       try{await navigator.clipboard.writeText(text);b.textContent='✓ NÚMERO COPIADO!'}catch{b.textContent='Número: '+ticketLabel(r.ticket_no)}
     }else if(a==='logout'){playSfx('tap');state.token='';opaSession.removeItem('opa_admin_token_v3');state.adminData=null;state.screen='adminLogin';render();}
     else if(a==='simulate-draw'){simulateFive();}
+    else if(a==='pick-all-shifts'){state.selectedShifts=OPA_SHIFTS.slice();state.simulatedWinners=[];render();}
+    else if(a==='reset-test'){
+      const msg='Reiniciar SOMENTE a rodada de teste do Supabase? Os vencedores atuais serão arquivados, o resultado ativo apagado e as inscrições reabertas. NÃO apaga participantes. Digite REINICIAR TESTE OPA para confirmar.';
+      const response=window.prompt(msg);
+      if(response==='REINICIAR TESTE OPA')await adminMutation('reset');
+      else if(response!==null){alertError('Confirmação incorreta. Nenhum resultado foi alterado.');render();}
+    }
+    else if(a==='go-live'){
+      const response=window.prompt('ATENÇÃO: ativa o sorteio REAL e impede reiniciar resultados pelo painel. Antes, remova participantes fictícios. Digite ATIVAR SORTEIO OFICIAL para continuar.');
+      if(response==='ATIVAR SORTEIO OFICIAL')await adminMutation('go-live');
+      else if(response!==null){alertError('Ativação cancelada.');render();}
+    }
     else if(a==='draw-show-official'){
       const saved=state.adminData?.winners;
       if(Array.isArray(saved)&&saved.length===5){try{opaStartPresentation('official',saved)}catch(err){alertError(err.message);render();}}
@@ -1073,7 +1153,7 @@ const scenes = [
     }
     else if(a==='toggle-open'){
       const willOpen=!state.adminData.registration_open;
-      const ok=confirm(willOpen?'Reabrir as inscrições para os três turnos?':'Fechar as inscrições agora? Ninguém mais poderá receber número até reabri-las.');
+      const ok=confirm(willOpen?'Reabrir as inscrições para os quatro grupos?':'Fechar as inscrições agora? Ninguém mais poderá receber número até reabri-las.');
       if(ok)await adminMutation('toggle',{open:willOpen});
     }else if(a==='exclude'){
       const ticket=Number(b.dataset.ticket),person=state.adminData.participants.find(x=>x.ticket_no===ticket);
@@ -1093,8 +1173,9 @@ const scenes = [
     }else if(a==='draw'){
       if(state.adminData?.participants?.some(isTestParticipant)){
         alertError('Sorteio oficial bloqueado: apague todos os cadastros TESTE OPA antes de realizar o sorteio definitivo.');render();
-      }else if(confirm('CONFIRMAR: sortear agora exatamente 5 kits? Esta rodada ficará gravada e NÃO poderá ser refeita pelo painel.'))
-        await adminMutation('draw');
+      }else if(!state.selectedShifts.length){alertError('Selecione pelo menos um turno.');render();}
+      else if(confirm('CONFIRMAR SORTEIO OFICIAL: 5 kits entre os grupos '+state.selectedShifts.join(', ')+'. Os nomes serão gravados definitivamente no banco. Prosseguir?'))
+        await adminMutation('draw',{shifts:state.selectedShifts.slice()});
     }
   });
   async function init(){
