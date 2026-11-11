@@ -146,6 +146,19 @@
   .tag-delete:hover:not(:disabled){background:#ffe3db;border-color:#a34336}
   .tag-delete:disabled{opacity:.45;cursor:not-allowed}
   @media(max-width:355px){.participant{align-items:flex-start;flex-direction:column}.participant-actions{width:100%;justify-content:flex-start}}
+
+  /* ADMIN V13: testes ficticios e simulacao SEM GRAVACAO */
+  .simbox{margin:16px 0;padding:16px;border:2px dashed #70a58b;background:linear-gradient(135deg,#f3faee,#e6f2e8);border-radius:19px;color:#164433}
+  .simbox h3{font-size:19px;line-height:1.2;margin:0 0 7px;font-weight:950}
+  .simbox p{font-size:13px;line-height:1.5;margin:0 0 12px;color:#315b49}
+  .simbtn{width:100%;border:0;border-radius:15px;min-height:55px;background:linear-gradient(105deg,#226d52,#318961);color:white;font-weight:950;font-size:15px;box-shadow:0 5px 0 #174630}
+  .simbtn:disabled{background:#a7b9ad;box-shadow:0 4px 0 #7d9385;cursor:not-allowed}
+  .simwarning{display:block;padding:10px 12px;margin:10px 0;border-radius:12px;background:#fff4dc;border:1px solid #ebca72;color:#705020;font-weight:850;font-size:12px;line-height:1.45}
+  .simresult{border:1px solid #aed1b9;border-radius:14px;padding:12px;margin-top:13px;background:white}
+  .simresult strong{color:#1c6449}
+  .simresult .sim-row{display:block;padding:8px 0;border-bottom:1px solid #e0ebe4;font-weight:720;font-size:12px;line-height:1.45}
+  .simresult .sim-row:last-child{border-bottom:0}
+  .simtag{display:inline-block;margin-left:6px;border-radius:7px;padding:2px 5px;background:#e0f2e6;color:#1d7150;font-weight:900;font-size:10px}
 </style>
   <!-- Missão OPA. Use a pasta PUBLICAR_GITHUB para registros oficiais. -->
 </head>
@@ -309,7 +322,7 @@ const scenes = [
   const adminMode = new URLSearchParams(location.search).get('admin') === '1';
   const state = {screen: adminMode?'adminLogin':'splash', index:0, phase:'context', choice:null, results:[],
     formName:'', formShift:'', formConsent:false, error:'', busy:false, receipt:null, registrationOpen:true,
-    token:opaSession.getItem('opa_admin_token_v3')||'', adminData:null, search:'', shiftFilter:'all'};
+    token:opaSession.getItem('opa_admin_token_v3')||'', adminData:null, search:'', shiftFilter:'all', simulatedWinners:[]};
   const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ticketLabel = n => String(n).padStart(4,'0');
   const normalName = s => String(s||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -487,10 +500,31 @@ const scenes = [
       <p class="smallprint" style="margin-top:12px">A URL de participantes é a mesma, sem <code>?admin=1</code>.</p>
     </section>`}
   function eligibleCount(d){return d.participants.filter(x=>!x.excluded&&!x.is_admin).length}
+  const isTestParticipant = p => normalName(p.full_name).startsWith('teste opa ');
+  function simulateFive(){
+    const d=state.adminData;
+    const pool=(d?.participants||[]).filter(p=>isTestParticipant(p)&&!p.excluded&&!p.is_admin);
+    if(pool.length<5){alertError('São necessários ao menos cinco registros TESTE OPA elegíveis para simular.');render();return;}
+    const remaining=pool.slice(),winners=[];
+    for(let i=0;i<5;i++){
+      const rand=new Uint32Array(1);
+      let pos;
+      if(window.crypto&&crypto.getRandomValues){
+        const limit=Math.floor(4294967296/remaining.length)*remaining.length;
+        do {crypto.getRandomValues(rand);} while(rand[0]>=limit);
+        pos=rand[0]%remaining.length;
+      }else{pos=Math.floor(Math.random()*remaining.length);}
+      winners.push({...remaining.splice(pos,1)[0],kit_no:i+1});
+    }
+    state.simulatedWinners=winners;
+    clearError();render();
+    document.getElementById('sim-results')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
   function adminDashboardView(){
     const d=state.adminData||demoDashboard();
     const total=d.participants.length,eligible=eligibleCount(d),excluded=total-eligible;
     const done=d.winners.length>0,closed=!d.registration_open;
+    const testRecords=d.participants.filter(isTestParticipant),testEligible=testRecords.filter(x=>!x.excluded&&!x.is_admin);
     return `<section class="admin">
       <div class="adminbar"><div><span class="pill">🎁 SORTEIO OPA · ORGANIZAÇÃO</span><h1 class="admin-title">Central dos 5 kits</h1></div><button class="linkbutton" type="button" data-action="logout">Sair</button></div>
       <p class="admin-sub">Bem-vindo(a), ${escapeHtml(d.admin_name)}. Inscrições dos três turnos em uma lista única.</p>
@@ -498,8 +532,14 @@ const scenes = [
       <div class="statusbar ${closed?'closed':''}">${done?'🏆 SORTEIO FINALIZADO':closed?'🔐 INSCRIÇÕES FECHADAS':'🟢 INSCRIÇÕES ABERTAS'} · ${total} registros no total</div>
       <div class="stats"><div class="stat"><strong>${total}</strong><span>Participantes cadastrados</span></div><div class="stat"><strong>${eligible}</strong><span>Elegíveis para o sorteio</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 1').length}</strong><span>Turno 1</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 2').length}</strong><span>Turno 2</span></div><div class="stat"><strong>${d.participants.filter(x=>x.shift==='Turno 3').length}</strong><span>Turno 3</span></div></div>
       <div class="admin-btns"><button class="dangerbtn" type="button" data-action="toggle-open" ${done||state.busy?'disabled':''}>${d.registration_open?'🔒 FECHAR INSCRIÇÕES':'🔓 REABRIR INSCRIÇÕES'}</button>
-      <button class="drawbtn" type="button" data-action="draw" ${done||!closed||eligible<5||state.busy?'disabled':''}>🎉 ${done?'SORTEIO REALIZADO':'SORTEAR 5 KITS DE CHÁ'}</button></div>
-      <p class="minor">${done?'O resultado é definitivo e fica salvo no banco.':'O administrador não concorre. Confira a lista e exclua eventuais registros indevidos antes de fechar e sortear. O sorteio só libera com as inscrições fechadas e pelo menos 5 elegíveis.'}</p>
+      <button class="drawbtn" type="button" data-action="draw" ${done||!closed||eligible<5||testRecords.length||state.busy?'disabled':''}>🎉 ${done?'SORTEIO REALIZADO':'SORTEAR 5 KITS DE CHÁ'}</button></div>
+      <p class="minor">${done?'O resultado é definitivo e fica salvo no banco.':testRecords.length?'Sorteio DEFINITIVO BLOQUEADO enquanto houver registros fictícios TESTE OPA. Apague os testes antes do evento oficial.':'O administrador não concorre. Confira a lista e exclua eventuais registros indevidos antes de fechar e sortear. O sorteio só libera com as inscrições fechadas e pelo menos 5 elegíveis.'}</p>
+      <div class="simbox"><h3>🧪 Sorteio fictício — ensaio</h3>
+        <p>Encontrados <strong>${testRecords.length} cadastros TESTE OPA</strong> (${testEligible.length} elegíveis). Esta simulação sorteia apenas nomes fictícios, não grava resultados no Supabase e não encerra inscrições.</p>
+        ${testRecords.length?'<span class="simwarning">⚠ Não use o botão do sorteio definitivo enquanto existirem cadastros TESTE. A simulação abaixo pode ser refeita quantas vezes quiser.</span>':''}
+        <button class="simbtn" type="button" data-action="simulate-draw" ${testEligible.length<5||state.busy?'disabled':''}>🎲 ${state.simulatedWinners.length?'SIMULAR NOVAMENTE':'SIMULAR 5 GANHADORES (NÃO SALVA)'}</button>
+        ${state.simulatedWinners.length?`<div id="sim-results" class="simresult"><strong>🔬 RESULTADO FICTÍCIO — NÃO É OFICIAL</strong>${state.simulatedWinners.map(w=>`<span class="sim-row">🎁 Kit ${w.kit_no} · ${escapeHtml(w.full_name)} · Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</span>`).join('')}<p style="margin:10px 0 0">Recarregue a página para descartar este resultado. Nenhum ganhador foi salvo.</p></div>`:''}
+      </div>
       ${done?`<h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
       <h2 class="winner-title">👥 Inscritos (${total})</h2>
       <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os turnos</option><option value="Turno 1" ${state.shiftFilter==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.shiftFilter==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.shiftFilter==='Turno 3'?'selected':''}>Turno 3</option></select></div>
@@ -511,7 +551,7 @@ const scenes = [
     const q=normalName(state.search);
     const filtered=state.adminData.participants.filter(x=> (state.shiftFilter==='all'||x.shift===state.shiftFilter) && (!q||normalName(x.full_name).includes(q)||ticketLabel(x.ticket_no).includes(q)));
     if(!filtered.length)return '<div class="empty">Nenhum participante encontrado.</div>';
-    return filtered.map(p=>`<div class="participant ${p.excluded||p.is_admin?'excluded':''}"><div class="personinfo"><strong>🎟 ${ticketLabel(p.ticket_no)} · ${escapeHtml(p.full_name)}</strong><small>${escapeHtml(p.shift)}${p.is_admin?' · ⛔ ADMINISTRADOR':''}${p.excluded?' · EXCLUÍDO':''}</small></div><div class="participant-actions"><button class="tag ${p.excluded?'active':''}" type="button" data-action="exclude" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||p.is_admin||state.busy?'disabled':''}>${p.is_admin?'ADMIN':p.excluded?'REINCLUIR':'EXCLUIR'}</button><button class="tag-delete" type="button" data-action="delete-participant" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||state.busy?'disabled':''} aria-label="Apagar definitivamente o cadastro de ${escapeHtml(p.full_name)} número ${ticketLabel(p.ticket_no)}">APAGAR</button></div></div>`).join('');
+    return filtered.map(p=>`<div class="participant ${p.excluded||p.is_admin?'excluded':''}"><div class="personinfo"><strong>🎟 ${ticketLabel(p.ticket_no)} · ${escapeHtml(p.full_name)}</strong><small>${escapeHtml(p.shift)}${p.is_admin?' · ⛔ ADMINISTRADOR':''}${p.excluded?' · EXCLUÍDO':''}${isTestParticipant(p)?' · 🧪 TESTE':''}</small></div><div class="participant-actions"><button class="tag ${p.excluded?'active':''}" type="button" data-action="exclude" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||p.is_admin||state.busy?'disabled':''}>${p.is_admin?'ADMIN':p.excluded?'REINCLUIR':'EXCLUIR'}</button><button class="tag-delete" type="button" data-action="delete-participant" data-ticket="${p.ticket_no}" ${state.adminData.winners.length||state.busy?'disabled':''} aria-label="Apagar definitivamente o cadastro de ${escapeHtml(p.full_name)} número ${ticketLabel(p.ticket_no)}">APAGAR</button></div></div>`).join('');
   }
   
   function ensureAudioButton(){
@@ -650,6 +690,7 @@ const scenes = [
   }
   async function refreshAdmin(){state.adminData=cloud?await rpc('opa_admin_dashboard',{},state.token):demoDashboard()}
   async function adminMutation(action,params={}){
+    state.simulatedWinners=[];
     state.busy=true;clearError();render();
     try{
       if(cloud){
@@ -734,6 +775,7 @@ const scenes = [
       const text=`Missão OPA — Número ${ticketLabel(r.ticket_no)} — ${r.full_name} — ${r.shift}${cloud?'':' [DEMONSTRAÇÃO]'}`;
       try{await navigator.clipboard.writeText(text);b.textContent='✓ NÚMERO COPIADO!'}catch{b.textContent='Número: '+ticketLabel(r.ticket_no)}
     }else if(a==='logout'){playSfx('tap');state.token='';opaSession.removeItem('opa_admin_token_v3');state.adminData=null;state.screen='adminLogin';render();}
+    else if(a==='simulate-draw'){simulateFive();}
     else if(a==='toggle-open'){
       const willOpen=!state.adminData.registration_open;
       const ok=confirm(willOpen?'Reabrir as inscrições para os três turnos?':'Fechar as inscrições agora? Ninguém mais poderá receber número até reabri-las.');
@@ -754,7 +796,9 @@ const scenes = [
         }
       }
     }else if(a==='draw'){
-      if(confirm('CONFIRMAR: sortear agora exatamente 5 kits? Esta rodada ficará gravada e NÃO poderá ser refeita pelo painel.'))
+      if(state.adminData?.participants?.some(isTestParticipant)){
+        alertError('Sorteio oficial bloqueado: apague todos os cadastros TESTE OPA antes de realizar o sorteio definitivo.');render();
+      }else if(confirm('CONFIRMAR: sortear agora exatamente 5 kits? Esta rodada ficará gravada e NÃO poderá ser refeita pelo painel.'))
         await adminMutation('draw');
     }
   });
