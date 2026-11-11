@@ -159,6 +159,95 @@
   .simresult .sim-row{display:block;padding:8px 0;border-bottom:1px solid #e0ebe4;font-weight:720;font-size:12px;line-height:1.45}
   .simresult .sim-row:last-child{border-bottom:0}
   .simtag{display:inline-block;margin-left:6px;border-radius:7px;padding:2px 5px;background:#e0f2e6;color:#1d7150;font-weight:900;font-size:10px}
+
+/* V14 — ANIMACAO DO SORTEIO (visivel somente no painel administrativo) */
+.opa-present{position:fixed;z-index:1000;inset:0;background:radial-gradient(ellipse at 50% 12%,#285f47 0,#123b2c 42%,#071e17 100%);color:#eafce7;overflow-y:auto;padding:20px max(14px,env(safe-area-inset-left)) max(24px,env(safe-area-inset-bottom));font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;isolation:isolate;display:block;text-align:center}
+.opa-present:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.26;background:repeating-radial-gradient(circle at 50% 45%,transparent 0 40px,rgba(160,218,155,.14) 42px,transparent 44px);z-index:-1}
+.opa-p-body{width:min(100%,1040px);margin:0 auto;min-height:calc(100dvh - 40px);display:flex;flex-direction:column;align-items:center;gap:10px}
+.opa-p-top{display:flex;justify-content:space-between;align-items:center;gap:14px;width:100%;border-bottom:1px solid rgba(186,235,176,.28);padding:0 2px 12px}
+.opa-p-brand{font-size:12px;letter-spacing:2px;font-weight:900;color:#b9e49d;text-align:left}
+.opa-p-close{color:#e7f7e7;background:rgba(255,255,255,.12);border:1px solid rgba(218,247,203,.23);border-radius:12px;min-height:38px;padding:7px 14px;font-weight:800}
+.opa-p-close:hover{background:rgba(255,255,255,.2)}
+.opa-p-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(159,231,152,.45);background:rgba(168,226,162,.13);padding:8px 13px;border-radius:100px;font-size:11px;letter-spacing:1.1px;font-weight:900;color:#d9f6c8;margin-top:9px}
+.opa-p-pill.sim{background:#f7e9ae;color:#594716;border-color:#e2d07d}
+.opa-p-title{font-weight:1000;font-size:clamp(30px,5vw,55px);letter-spacing:-1.5px;line-height:1.04;margin:5px 0 2px;color:#f4ffe5;text-shadow:0 3px 25px rgba(113,226,128,.23)}
+.opa-p-sub{font-size:clamp(13px,2vw,17px);line-height:1.35;color:#bdd8c7;margin:0 0 1px}
+.opa-p-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:min(100%,550px);margin:6px auto 1px}
+.opa-p-progress span{padding:7px 4px;white-space:nowrap;font-size:11px;border-radius:11px;background:rgba(232,250,218,.08);color:#adcfb6;border:1px solid rgba(255,255,255,.1);font-weight:850}
+.opa-p-progress span.done{background:#78c495;color:#0b3221;border-color:#baf3a9}
+.opa-p-progress span.current{background:#e5da7b;color:#263b1b;border-color:#fff2a7}
+.opa-wheel-area{position:relative;display:grid;place-items:center;margin:6px 0 0;min-height:285px;width:100%}
+.opa-wheel{width:clamp(238px, min(62vw,43vh), 350px);aspect-ratio:1;border-radius:50%;border:9px solid #d8e99e;box-shadow:0 0 0 6px #276e51,0 0 0 10px rgba(183,231,157,.28),0 15px 40px rgba(0,0,0,.4),inset 0 0 0 2px #eefed4;background:conic-gradient(#2b8560 0 30deg,#a5d87b 30deg 60deg,#1d6b4c 60deg 90deg,#e0d579 90deg 120deg,#2b8560 120deg 150deg,#a5d87b 150deg 180deg,#1d6b4c 180deg 210deg,#e0d579 210deg 240deg,#2b8560 240deg 270deg,#a5d87b 270deg 300deg,#1d6b4c 300deg 330deg,#e0d579 330deg 360deg);position:relative;overflow:hidden}
+.opa-wheel:before{content:"";position:absolute;inset:15px;border:2px dashed rgba(251,255,239,.5);border-radius:50%}
+.opa-wheel:after{content:"";position:absolute;inset:36%;background:#093b29;border:5px solid #f1f6c5;border-radius:50%;box-shadow:0 0 0 8px rgba(13,54,38,.25)}
+.opa-wheel-word{font-size:clamp(26px,5vw,40px);font-weight:1000;color:white;z-index:1;position:absolute;inset:0;display:grid;place-items:center;text-shadow:0 1px 4px #09271c}
+.opa-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:39px solid #fff0a0;filter:drop-shadow(0 6px 2px rgba(0,0,0,.45));z-index:5}
+.opa-wheel-wrap{position:relative;display:grid;place-items:center;width:max-content;max-width:100%}
+.opa-wheel.spin{animation:opaSpinWheel 4.2s cubic-bezier(.12,.72,.16,1) both}
+@keyframes opaSpinWheel{0%{transform:rotate(0deg)}100%{transform:rotate(2310deg)}}
+.opa-wheel.wait{animation:opaIdleWheel 15s linear infinite}
+@keyframes opaIdleWheel{to{transform:rotate(360deg)}}
+.opa-p-counter{min-width:120px;padding:7px 14px;border-radius:11px;color:#e5fcd9;background:#194b39;border:1px solid #6baf87;font-weight:1000;font-size:23px;letter-spacing:4px;font-variant-numeric:tabular-nums;box-shadow:inset 0 2px 12px rgba(0,0,0,.22)}
+.opa-p-counter .muted{font-size:14px;letter-spacing:0;color:#bbdcc9}
+.opa-gift{margin:0 auto;position:relative;width:210px;height:116px;filter:drop-shadow(0 14px 16px rgba(0,0,0,.32));transform:translateY(0);transition:transform .45s cubic-bezier(.18,.8,.2,1)}
+.opa-gift-lid{position:absolute;top:7px;left:12px;width:186px;height:30px;border-radius:9px;background:#c7e17b;border:3px solid #dff6b7;box-shadow:inset 0 -5px 0 rgba(35,82,42,.14);transform-origin:center bottom;z-index:3;transition:transform .72s cubic-bezier(.2,.85,.2,1)}
+.opa-gift-lid:after{content:"";position:absolute;top:-1px;left:76px;height:27px;width:24px;background:#1a6347}
+.opa-gift-box{position:absolute;bottom:0;left:25px;width:160px;height:91px;background:linear-gradient(115deg,#2b865c,#16593e);border:4px solid #b3dc83;border-radius:7px 7px 16px 16px;display:grid;place-items:center}
+.opa-gift-box:after{content:"";position:absolute;inset:0 42% 0 42%;background:#cde69c;opacity:.85;z-index:0}
+.opa-gift-mark{position:relative;z-index:1;font-size:23px;color:#f7ffe8;font-weight:1000;letter-spacing:1px;text-shadow:0 2px 3px #1b573c;background:#2f815f;border-radius:6px;padding:1px 5px}
+.opa-gift.open .opa-gift-lid{transform:translateY(-75px) rotate(-9deg)}
+.opa-gift.open{transform:translateY(7px)}
+.opa-p-result{border:2px solid #aad897;background:linear-gradient(155deg,#255e43,#194c35);border-radius:20px;padding:17px 18px;margin:3px auto;width:min(100%,540px);box-shadow:0 15px 30px rgba(0,0,0,.19);animation:opaReveal .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes opaReveal{from{transform:translateY(24px) scale(.94);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.opa-p-result small{display:block;color:#d7eece;letter-spacing:1px;font-size:11px;font-weight:900;margin-bottom:4px}
+.opa-p-number{font-size:clamp(51px,10vw,82px);line-height:1.0;font-weight:1000;color:#ddeb85;letter-spacing:2px;text-shadow:0 5px 16px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.opa-p-name{font-size:clamp(18px,3.4vw,27px);font-weight:950;overflow-wrap:anywhere;color:#fffef3;margin-top:5px}
+.opa-p-shift{font-size:13px;color:#b9d9c5;margin-top:4px}
+.opa-p-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:min(100%,570px);margin:8px 0 12px}
+.opa-p-primary,.opa-p-secondary{border-radius:16px;min-height:56px;padding:12px 19px;cursor:pointer;font-size:15px;line-height:1.2;font-weight:950;transition:transform .16s,filter .16s}
+.opa-p-primary{background:linear-gradient(135deg,#e8eb88,#b7de74);box-shadow:0 5px 0 #6e9543;color:#123922;border:0;flex:1 1 200px;max-width:420px}
+.opa-p-secondary{background:#1b533d;border:1px solid #96c99c;color:#f3ffe9;flex:0 1 190px}
+.opa-p-primary:hover,.opa-p-secondary:hover{filter:brightness(1.08)}
+.opa-p-primary:active,.opa-p-secondary:active{transform:translateY(3px)}
+.opa-p-caption{font-size:12px;color:#bcd6c2;max-width:670px;line-height:1.5;margin:3px auto 10px}
+.opa-p-roundup{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;width:100%;margin:18px 0 7px}
+.opa-p-roundup>div{border:1px solid #a4d49c;border-radius:16px;padding:14px 8px;background:#1c503b;min-width:0}
+.opa-p-roundup strong{display:block;font-size:28px;color:#ecf8bb;font-variant-numeric:tabular-nums}
+.opa-p-roundup span{font-size:12px;overflow-wrap:anywhere;color:#f2fff1;font-weight:850;line-height:1.35;display:block;margin-top:4px}
+.opa-p-roundup small{color:#acd4b7;display:block;margin-top:4px}
+.opa-p-finished{padding:50px 10px 20px;max-width:750px}
+.opa-p-finished h2{font-size:clamp(32px,5.5vw,54px);color:#e5f9c8;margin:0 0 8px}
+.opa-p-flare{font-size:40px;animation:opaGlow 2s ease infinite alternate}
+@keyframes opaGlow{to{filter:drop-shadow(0 0 14px #cffb94);transform:scale(1.08)}}
+.opa-burst{position:fixed;inset:0;z-index:1010;pointer-events:none;overflow:hidden}
+.opa-burst i{display:block;position:absolute;top:-20px;width:10px;height:18px;border-radius:2px;animation:opaConfetti 3s linear both}
+@keyframes opaConfetti{to{transform:translate3d(var(--sway),110vh,0) rotate(500deg);opacity:0}}
+@media(max-width:650px){.opa-p-title{font-size:33px}.opa-p-body{gap:7px}.opa-wheel-area{min-height:255px}.opa-wheel{width:min(66vw,260px)}.opa-gift{transform:scale(.8);margin:-8px auto}.opa-gift.open{transform:scale(.8) translateY(7px)}.opa-p-roundup{grid-template-columns:repeat(2,minmax(0,1fr))}.opa-p-roundup>div:last-child{grid-column:1/-1}.opa-p-primary{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.opa-wheel.spin{animation-duration:1s}.opa-wheel.wait{animation:none}.opa-p-result{animation:none}.opa-gift.open .opa-gift-lid{transition:none}}
+
+
+/* A tela de sorteio deve cobrir inclusive o rodape existente */
+body.opa-show-present .brandline,body.opa-show-present .footer,body.opa-show-present #mode-banner{visibility:hidden!important}
+body.opa-show-present{overflow:hidden}
+@media(max-width:650px){
+ .opa-p-title{font-size:30px;line-height:1.02;margin:3px 0 1px}
+ .opa-p-progress{gap:5px;margin:3px auto}
+ .opa-p-progress span{font-size:10px;padding:5px 3px}
+ .opa-wheel-area{min-height:214px;margin:2px 0 0}
+ .opa-wheel{width:min(52vw,210px);border-width:7px}
+ .opa-p-counter{font-size:18px;padding:5px 12px}
+ .opa-gift{height:86px;transform:scale(.62);transform-origin:center bottom;margin:-20px auto -9px}
+ .opa-gift.open{transform:scale(.62) translateY(0)}
+ .opa-p-result{padding:10px 12px;border-radius:15px;margin:1px auto}
+ .opa-p-result small{font-size:10px}
+ .opa-p-number{font-size:50px}
+ .opa-p-name{font-size:18px}
+ .opa-p-actions{margin:3px auto 4px}
+ .opa-p-primary,.opa-p-secondary{min-height:49px}
+ .opa-p-caption{font-size:10px;line-height:1.3;margin:0 auto 6px}
+ .opa-p-body{gap:4px}
+}
+
 </style>
   <!-- Missão OPA. Use a pasta PUBLICAR_GITHUB para registros oficiais. -->
 </head>
@@ -322,7 +411,7 @@ const scenes = [
   const adminMode = new URLSearchParams(location.search).get('admin') === '1';
   const state = {screen: adminMode?'adminLogin':'splash', index:0, phase:'context', choice:null, results:[],
     formName:'', formShift:'', formConsent:false, error:'', busy:false, receipt:null, registrationOpen:true,
-    token:opaSession.getItem('opa_admin_token_v3')||'', adminData:null, search:'', shiftFilter:'all', simulatedWinners:[]};
+    token:opaSession.getItem('opa_admin_token_v3')||'', adminData:null, search:'', shiftFilter:'all', simulatedWinners:[], drawPresentation:null};
   const escapeHtml = s => String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const ticketLabel = n => String(n).padStart(4,'0');
   const normalName = s => String(s||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -517,9 +606,132 @@ const scenes = [
       winners.push({...remaining.splice(pos,1)[0],kit_no:i+1});
     }
     state.simulatedWinners=winners;
-    clearError();render();
-    document.getElementById('sim-results')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    opaStartPresentation('demo',winners);
   }
+
+  let opaSpinTimeout=null,opaTickTimeout=null;
+  let opaCtx=null;
+  function opaTone(freq,duration=0.07,volume=0.025,type='square'){
+    if(!audio.enabled)return;
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      if(!opaCtx)opaCtx=new AC();
+      if(opaCtx.state==='suspended')opaCtx.resume().catch(()=>{});
+      const start=opaCtx.currentTime,osc=opaCtx.createOscillator(),gain=opaCtx.createGain();
+      osc.type=type;osc.frequency.setValueAtTime(freq,start);
+      gain.gain.setValueAtTime(0.0001,start);
+      gain.gain.exponentialRampToValueAtTime(volume,start+0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+      osc.connect(gain);gain.connect(opaCtx.destination);osc.start(start);osc.stop(start+duration+.02);
+    }catch{}
+  }
+  function opaClaps(){
+    if(!audio.enabled)return;
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      if(!opaCtx)opaCtx=new AC();
+      if(opaCtx.state==='suspended')opaCtx.resume().catch(()=>{});
+      const ctx=opaCtx;
+      for(let i=0;i<12;i++){
+        const n=Math.round(ctx.sampleRate*.07),buffer=ctx.createBuffer(1,n,ctx.sampleRate),samples=buffer.getChannelData(0);
+        for(let j=0;j<n;j++) samples[j]=(Math.random()*2-1)*Math.exp(-8*j/n);
+        const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();
+        source.buffer=buffer;filter.type='bandpass';filter.frequency.value=1300;filter.Q.value=.65;
+        gain.gain.value=.07;source.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
+        source.start(ctx.currentTime+i*.085+Math.random()*.05);
+      }
+    }catch{}
+  }
+  function opaPresentationCleanup(){
+    if(opaSpinTimeout){clearTimeout(opaSpinTimeout);opaSpinTimeout=null;}
+    if(opaTickTimeout){clearInterval(opaTickTimeout);opaTickTimeout=null;}
+    document.querySelectorAll('.opa-burst').forEach(x=>x.remove());
+    if(audio.bg)audio.bg.volume=.44;
+  }
+  function opaStartPresentation(mode,raw){
+    // A roleta é ilustrativa: nunca escolhe ou altera os ganhadores.
+    // No modo oficial a lista vem apenas do retorno autenticado do Supabase.
+    if(!['official','demo'].includes(mode) || !Array.isArray(raw) || raw.length!==5)throw new Error('São necessários cinco resultados válidos.');
+    const ids=new Set(raw.map(p=>Number(p.ticket_no)));
+    if(ids.size!==5 || raw.some(p=>!Number.isInteger(Number(p.ticket_no))||!p.full_name||p.is_admin))throw new Error('Resultados inválidos ou repetidos.');
+    opaPresentationCleanup();
+    const winners=raw.slice().sort((a,b)=>(Number(a.kit_no)||0)-(Number(b.kit_no)||0));
+    state.drawPresentation={mode,winners,index:0,phase:'ready',spinToken:0};
+    state.screen='drawPresentation';clearError();render();scrollTop();
+  }
+  function opaDrawScreen(){
+    const p=state.drawPresentation;
+    if(!p) return '<section class="opa-present">Apresentacao indisponivel.</section>';
+    const kit=p.index+1,w=p.winners[p.index],spin=p.phase==='spin',revealed=p.phase==='reveal',finished=p.phase==='finished';
+    const status=p.mode==='demo'?'SIMULAÇÃO — NÃO É OFICIAL':'SORTEIO OFICIAL — RESULTADO REGISTRADO';
+    const pillClass=p.mode==='demo'?'sim':'';
+    const finishList=p.winners.map(x=>`<div><strong>${ticketLabel(x.ticket_no)}</strong><span>${escapeHtml(x.full_name)}</span><small>Kit ${Number(x.kit_no)} · ${escapeHtml(x.shift)}</small></div>`).join('');
+    return `<section class="opa-present" aria-label="Apresentação animada do sorteio">
+      <div class="opa-p-body"><div class="opa-p-top"><span class="opa-p-brand">LEÃO · CIPA / SHE<br>MISSÃO OPA</span><button type="button" class="opa-p-close" data-action="draw-exit">✕ Voltar ao painel</button></div>
+      <div class="opa-p-pill ${pillClass}">${p.mode==='demo'?'🧪':'🏆'} ${status}</div>
+      ${finished?`<div class="opa-p-finished"><div class="opa-p-flare">🎉 🏆 🎉</div><h2>5 kits revelados!</h2><p class="opa-p-sub">${p.mode==='demo'?'Ensaio concluído. Nada foi gravado no banco.':'Resultado oficial já registrado pelo Supabase.'}</p></div>
+        <div class="opa-p-roundup">${finishList}</div>
+        <div class="opa-p-actions"><button type="button" class="opa-p-primary" data-action="draw-exit">VOLTAR AO PAINEL</button><button type="button" class="opa-p-secondary" data-action="draw-again">REVER ANIMAÇÃO</button></div>`:`
+      <h1 class="opa-p-title">${spin?'A roleta está girando...':revealed?'TEMOS UM CONTEMPLADO!':'Quem será o próximo?'}</h1>
+      <p class="opa-p-sub">Kit ${kit} de 5 · ${p.mode==='demo'?'Participantes fictícios TESTE OPA':'Participantes elegíveis'}</p>
+      <div class="opa-p-progress">${p.winners.map((_,i)=>`<span class="${i<p.index?'done':i===p.index?'current':''}">Kit ${i+1}${i<p.index?' ✓':''}</span>`).join('')}</div>
+      <div class="opa-wheel-area"><div class="opa-wheel-wrap"><div class="opa-wheel ${spin?'spin':revealed?'':'wait'}"><div class="opa-wheel-word">OPA!</div></div><div class="opa-pointer"></div></div></div>
+      ${spin?'<div class="opa-p-counter" id="opa-digit">0000</div>':revealed?'':'<div class="opa-p-counter"><span class="muted">PRONTO PARA GIRAR</span></div>'}
+      ${revealed?`<div class="opa-gift open"><div class="opa-gift-lid"></div><div class="opa-gift-box"><span class="opa-gift-mark">LEÃO</span></div></div>
+      <div class="opa-p-result" role="status" aria-live="polite"><small>🎁 KIT ${kit} · NÚMERO CONTEMPLADO</small><div class="opa-p-number">${ticketLabel(w.ticket_no)}</div><div class="opa-p-name">${escapeHtml(w.full_name)}</div><div class="opa-p-shift">${escapeHtml(w.shift)}</div></div>`:
+      `<div class="opa-gift"><div class="opa-gift-lid"></div><div class="opa-gift-box"><span class="opa-gift-mark">LEÃO</span></div></div>`}
+      <div class="opa-p-actions">${p.phase==='ready'?`<button type="button" class="opa-p-primary" data-action="draw-spin">🎡 GIRAR PARA REVELAR O KIT ${kit}</button>`:p.phase==='spin'?'<button class="opa-p-primary" disabled>GIRANDO... 🔊</button>':`<button type="button" class="opa-p-primary" data-action="draw-next">${kit===5?'🏆 VER OS 5 CONTEMPLADOS':'➡ REVELAR O PRÓXIMO KIT'}</button>`}
+      </div>
+      <p class="opa-p-caption">${p.mode==='demo'?'MODO FICTÍCIO: só usa registros TESTE OPA. Não fecha inscrições e não grava ganhadores.':'MODO OFICIAL: os nomes foram definidos e gravados pelo Supabase antes da animação.'} A roleta e a caixa são apenas efeitos visuais.</p>`}
+    </div></section>`;
+  }
+  function opaBurst(){
+    document.querySelectorAll('.opa-burst').forEach(x=>x.remove());
+    const root=document.createElement('div');root.className='opa-burst';
+    const shades=['#e8f3a8','#b6e08c','#6bce9d','#ddc56d','#efffcf','#fff'];
+    for(let i=0;i<54;i++){
+      const part=document.createElement('i');
+      part.style.left=(Math.random()*100)+'%';part.style.background=shades[i%shades.length];
+      part.style.animationDelay=(Math.random()*.48)+'s';part.style.setProperty('--sway',`${Math.round(Math.random()*180-90)}px`);
+      root.appendChild(part);
+    }
+    document.body.appendChild(root);setTimeout(()=>root.remove(),3600);
+  }
+  function opaSpin(){
+    const p=state.drawPresentation;
+    if(!p||state.screen!=='drawPresentation'||p.phase!=='ready')return;
+    opaPresentationCleanup();
+    p.phase='spin';p.spinToken++;
+    const token=p.spinToken;
+    if(audio.bg)audio.bg.volume=.17;
+    render();
+    const pool=(state.adminData?.participants||[]).filter(x=>!x.excluded&&!x.is_admin);
+    let ticks=0;
+    opaTickTimeout=setInterval(()=>{
+      if(state.screen!=='drawPresentation'||!state.drawPresentation||state.drawPresentation.spinToken!==token){opaPresentationCleanup();return;}
+      const shown=pool.length?pool[ticks%pool.length].ticket_no:((ticks*37)%9999)+1;
+      const el=document.getElementById('opa-digit');if(el)el.textContent=ticketLabel(shown);
+      ticks++;opaTone(660+Math.min(400,ticks*9),.045,.012);
+    },82);
+    opaSpinTimeout=setTimeout(()=>{
+      opaPresentationCleanup();
+      if(state.screen!=='drawPresentation'||!state.drawPresentation||state.drawPresentation.spinToken!==token)return;
+      state.drawPresentation.phase='reveal';render();opaBurst();
+      playSfx('good');opaClaps();
+      if(state.drawPresentation.index===4)playSfx('finish');
+    },4200);
+  }
+  function opaNext(){
+    const p=state.drawPresentation;
+    if(!p||p.phase!=='reveal')return;
+    if(p.index===4){p.phase='finished';render();opaBurst();opaClaps();}
+    else{p.index++;p.phase='ready';render();}
+    scrollTop();
+  }
+  function opaClose(){opaPresentationCleanup();state.drawPresentation=null;state.screen='adminDashboard';render();scrollTop();}
+
   function adminDashboardView(){
     const d=state.adminData||demoDashboard();
     const total=d.participants.length,eligible=eligibleCount(d),excluded=total-eligible;
@@ -540,7 +752,7 @@ const scenes = [
         <button class="simbtn" type="button" data-action="simulate-draw" ${testEligible.length<5||state.busy?'disabled':''}>🎲 ${state.simulatedWinners.length?'SIMULAR NOVAMENTE':'SIMULAR 5 GANHADORES (NÃO SALVA)'}</button>
         ${state.simulatedWinners.length?`<div id="sim-results" class="simresult"><strong>🔬 RESULTADO FICTÍCIO — NÃO É OFICIAL</strong>${state.simulatedWinners.map(w=>`<span class="sim-row">🎁 Kit ${w.kit_no} · ${escapeHtml(w.full_name)} · Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</span>`).join('')}<p style="margin:10px 0 0">Recarregue a página para descartar este resultado. Nenhum ganhador foi salvo.</p></div>`:''}
       </div>
-      ${done?`<h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
+      ${done?`<button class="simbtn" type="button" data-action="draw-show-official">🎡 REVER A APRESENTAÇÃO DOS 5 GANHADORES</button><h2 class="winner-title">🏆 Nossos 5 ganhadores</h2><div class="winners">${d.winners.map(w=>`<div class="winner"><div class="kit">🎁<br>Kit ${w.kit_no}</div><div class="who">${escapeHtml(w.full_name)}<small>Nº ${ticketLabel(w.ticket_no)} · ${escapeHtml(w.shift)}</small></div></div>`).join('')}</div>`:''}
       <h2 class="winner-title">👥 Inscritos (${total})</h2>
       <div class="searchrow"><input id="admin-search" placeholder="Buscar nome ou número..." aria-label="Pesquisar inscritos" value="${escapeHtml(state.search)}"><select id="admin-filter" aria-label="Filtrar por turno"><option value="all" ${state.shiftFilter==='all'?'selected':''}>Todos os turnos</option><option value="Turno 1" ${state.shiftFilter==='Turno 1'?'selected':''}>Turno 1</option><option value="Turno 2" ${state.shiftFilter==='Turno 2'?'selected':''}>Turno 2</option><option value="Turno 3" ${state.shiftFilter==='Turno 3'?'selected':''}>Turno 3</option></select></div>
       <div id="admin-list" class="participant-list">${adminListHtml()}</div><p class="smallprint"><strong>Excluir do sorteio</strong> mantém o registro, mas o torna inelegível. <strong>Apagar cadastro</strong> remove o participante definitivamente do banco e permite um novo cadastro do mesmo nome. Números apagados ficam disponíveis para a próxima inscrição, sem mudar os números dos demais. A exclusão definitiva exige confirmação e não fica disponível depois do sorteio.</p>
@@ -633,6 +845,7 @@ const scenes = [
   }
 
   function render(){
+    document.body.classList.toggle('opa-show-present',state.screen==='drawPresentation');
     ensureAudioButton();
     if(state.screen==='splash')app.innerHTML=splashView();
     if(state.screen==='intro')app.innerHTML=cover();
@@ -647,7 +860,10 @@ const scenes = [
     if(state.screen==='receipt')app.innerHTML=receiptView();
     if(state.screen==='adminLogin')app.innerHTML=adminLoginView();
     if(state.screen==='adminDashboard')app.innerHTML=adminDashboardView();
+    if(state.screen==='drawPresentation')app.innerHTML=opaDrawScreen();
     ensureAudioButton();
+    const audioButton=document.getElementById('audio-toggle');
+    if(audioButton)audioButton.style.display=state.screen==='drawPresentation'?'none':'';
     maybeCelebrateReceipt();
   }
 
@@ -730,6 +946,12 @@ const scenes = [
         }
       }
       await refreshAdmin();
+      if(action==='draw'){
+        // Official winners MUST be read back from the authenticated database.
+        const saved=state.adminData?.winners;
+        if(!Array.isArray(saved)||saved.length!==5)throw new Error('O resultado não foi confirmado pelo painel. Verifique o banco antes de qualquer nova tentativa.');
+        opaStartPresentation('official',saved);
+      }
     }catch(e){alertError(e?.message||'Operação não concluída.');}
     finally{state.busy=false;render();}
   }
@@ -776,6 +998,16 @@ const scenes = [
       try{await navigator.clipboard.writeText(text);b.textContent='✓ NÚMERO COPIADO!'}catch{b.textContent='Número: '+ticketLabel(r.ticket_no)}
     }else if(a==='logout'){playSfx('tap');state.token='';opaSession.removeItem('opa_admin_token_v3');state.adminData=null;state.screen='adminLogin';render();}
     else if(a==='simulate-draw'){simulateFive();}
+    else if(a==='draw-show-official'){
+      const saved=state.adminData?.winners;
+      if(Array.isArray(saved)&&saved.length===5){try{opaStartPresentation('official',saved)}catch(err){alertError(err.message);render();}}
+    }
+    else if(a==='draw-spin'){opaSpin();}
+    else if(a==='draw-next'){opaNext();}
+    else if(a==='draw-exit'){opaClose();}
+    else if(a==='draw-again'){
+      if(state.drawPresentation){state.drawPresentation.index=0;state.drawPresentation.phase='ready';render();scrollTop();}
+    }
     else if(a==='toggle-open'){
       const willOpen=!state.adminData.registration_open;
       const ok=confirm(willOpen?'Reabrir as inscrições para os três turnos?':'Fechar as inscrições agora? Ninguém mais poderá receber número até reabri-las.');
